@@ -8,6 +8,7 @@ import {
   Building2,
   Coins,
   Percent,
+  BadgePercent, // Added for NPS icon
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -47,6 +48,12 @@ const features = [
     description: "Calculate interest on loans and savings",
     icon: Percent,
     href: "/simple-interest-calculator",
+  },
+  {
+    title: "NPS Calculator", // Added new calculator
+    description: "Calculate returns for National Pension Scheme",
+    icon: BadgePercent,
+    href: "/nps-calculator",
   },
   {
     title: "EMI Calculator",
