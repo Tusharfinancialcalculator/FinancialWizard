@@ -1,0 +1,65 @@
+SIP Calculator: Calculate how much you need to save or accumulate with a Systematic Investment Plan (SIP).
+
+Lumpsum Calculator: Calculate returns for one-time investments.
+
+SWP Calculator: Determine the final amount with Systematic Withdrawal Plans (SWP).
+
+Mutual Fund (MF) Calculator: Calculate returns on mutual fund investments.
+
+SSY Calculator: Calculate returns for Sukanya Samriddhi Yojana (SSY).
+
+PPF Calculator: Calculate returns on Public Provident Fund (PPF).
+
+EPF Calculator: Calculate returns for Employee Provident Fund (EPF).
+
+FD Calculator: Check returns on fixed deposits.
+
+RD Calculator: Check returns on recurring deposits.
+
+NPS Calculator: Calculate returns for National Pension Scheme (NPS).
+
+HRA Calculator: Calculate House Rent Allowance (HRA).
+
+Retirement Calculator: Estimate how much you need for retirement.
+
+EMI Calculator: Calculate equated monthly installments for loans.
+
+Car Loan EMI Calculator
+
+Home Loan EMI Calculator
+
+Simple Interest Calculator: Compute simple interest for loans or savings.
+
+Compound Interest Calculator: Compute compound interest easily.
+
+NSC Calculator: Calculate returns under the National Savings Certificate scheme.
+
+Step Up SIP Calculator: Estimate SIP returns with an annual increase in investment.
+
+Income Tax Calculator: Calculate payable income tax.
+
+Gratuity Calculator: Determine gratuity payouts upon retirement.
+
+APY Calculator: Calculate monthly investments under Atal Pension Yojana (APY).
+
+CAGR Calculator: Find the compound annual growth rate of investments.
+
+GST Calculator: Compute payable GST amounts.
+
+Flat vs Reducing Rate Calculator: Compare EMIs under flat and reducing balance interest schemes.
+
+Brokerage Calculator: Estimate brokerage and other charges for stock orders.
+
+Margin Calculator: Compute margin requirements for delivery and intraday trading.
+
+TDS Calculator: Calculate tax deducted at source (TDS).
+
+Salary Calculator: Determine your net take-home salary.
+
+Inflation Calculator: Adjust prices based on inflation rates.
+
+Post Office MIS Calculator: Calculate monthly income scheme returns from post offices.
+
+SCSS Calculator: Estimate returns from Senior Citizens Savings Scheme (SCSS).
+
+Stock Average Price Calculator: Calculate average price of stock investments.

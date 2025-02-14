@@ -5,6 +5,7 @@ import { Calculator } from "lucide-react";
 const navigation = [
   { name: "Home", href: "/" },
   { name: "SIP Calculator", href: "/sip-calculator" },
+  { name: "Lumpsum Calculator", href: "/lumpsum-calculator" },
   { name: "EMI Calculator", href: "/emi-calculator" },
   { name: "Credit Card", href: "/credit-card-calculator" },
   { name: "Interest", href: "/interest-calculator" },
@@ -23,7 +24,7 @@ export default function Navbar() {
               Financial Calculator
             </span>
           </div>
-          
+
           <div className="hidden md:block">
             <div className="flex items-center space-x-4">
               {navigation.map((item) => (

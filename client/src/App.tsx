@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import SipCalculator from "@/pages/SipCalculator";
+import LumpsumCalculator from "@/pages/LumpsumCalculator";
 import EmiCalculator from "@/pages/EmiCalculator";
 import CreditCardCalculator from "@/pages/CreditCardCalculator";
 import InterestCalculator from "@/pages/InterestCalculator";
@@ -18,6 +19,7 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/sip-calculator" component={SipCalculator} />
+          <Route path="/lumpsum-calculator" component={LumpsumCalculator} />
           <Route path="/emi-calculator" component={EmiCalculator} />
           <Route path="/credit-card-calculator" component={CreditCardCalculator} />
           <Route path="/interest-calculator" component={InterestCalculator} />
