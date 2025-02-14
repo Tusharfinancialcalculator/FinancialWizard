@@ -7,6 +7,7 @@ import {
   Landmark,
   Building2,
   Coins,
+  Percent,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -40,6 +41,12 @@ const features = [
     description: "Calculate returns on recurring deposits",
     icon: Coins,
     href: "/rd-calculator",
+  },
+  {
+    title: "Simple Interest Calculator",
+    description: "Calculate interest on loans and savings",
+    icon: Percent,
+    href: "/simple-interest-calculator",
   },
   {
     title: "EMI Calculator",

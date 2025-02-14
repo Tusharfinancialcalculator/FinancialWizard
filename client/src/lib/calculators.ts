@@ -254,3 +254,31 @@ export function calculateRD(
     yearlyData,
   };
 }
+
+export function calculateSimpleInterest(
+  principal: number,
+  rate: number,
+  time: number
+): {
+  amount: number;
+  interest: number;
+  yearlyData: Array<{ label: string; value: number }>;
+} {
+  const interest = (principal * rate * time) / 100;
+  const amount = principal + interest;
+
+  let yearlyData = [];
+  for (let i = 0; i <= time; i++) {
+    const currentInterest = (principal * rate * i) / 100;
+    yearlyData.push({
+      label: `Year ${i}`,
+      value: Math.round(principal + currentInterest),
+    });
+  }
+
+  return {
+    amount,
+    interest,
+    yearlyData,
+  };
+}

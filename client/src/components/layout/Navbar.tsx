@@ -12,6 +12,7 @@ const navigation = [
   { name: "PPF Calculator", href: "/ppf-calculator" },
   { name: "FD Calculator", href: "/fd-calculator" },
   { name: "RD Calculator", href: "/rd-calculator" },
+  { name: "Simple Interest", href: "/simple-interest-calculator" }, // Added new route
 ];
 
 export default function Navbar() {

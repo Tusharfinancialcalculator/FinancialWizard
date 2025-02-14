@@ -13,6 +13,7 @@ import InterestCalculator from "@/pages/InterestCalculator";
 import PPFCalculator from "@/pages/PPFCalculator";
 import FDCalculator from "@/pages/FDCalculator";
 import RDCalculator from "@/pages/RDCalculator";
+import SimpleInterestCalculator from "@/pages/SimpleInterestCalculator"; // Added import
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
           <Route path="/ppf-calculator" component={PPFCalculator} />
           <Route path="/fd-calculator" component={FDCalculator} />
           <Route path="/rd-calculator" component={RDCalculator} />
+          <Route path="/simple-interest-calculator" component={SimpleInterestCalculator} /> {/* Added route */}
           <Route component={NotFound} />
         </Switch>
       </main>
