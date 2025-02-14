@@ -45,19 +45,18 @@ function calculateNPS(
   const yearsToRetirement = retirementAge - currentAge;
   const monthlyRate = expectedReturn / 100 / 12;
   const totalMonths = yearsToRetirement * 12;
-  
+
   let yearlyData = [];
   let totalInvestment = 0;
   let currentValue = 0;
-  
+
   for (let year = 1; year <= yearsToRetirement; year++) {
     for (let month = 1; month <= 12; month++) {
       totalInvestment += monthlyContribution;
       currentValue = (currentValue + monthlyContribution) * (1 + monthlyRate);
     }
     yearlyData.push({
-      year,
-      investment: totalInvestment,
+      label: `Year ${year}`,
       value: currentValue,
     });
   }
@@ -98,7 +97,7 @@ export default function NPSCalculator() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">NPS Calculator</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">
