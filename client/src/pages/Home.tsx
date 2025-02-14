@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Calculator, CreditCard, Wallet, PiggyBank } from "lucide-react";
+import { Calculator, CreditCard, Wallet, PiggyBank, Landmark } from "lucide-react";
 import { Link } from "wouter";
 
 const features = [
@@ -14,6 +14,12 @@ const features = [
     description: "Calculate returns on one-time investments",
     icon: PiggyBank,
     href: "/lumpsum-calculator",
+  },
+  {
+    title: "PPF Calculator",
+    description: "Calculate returns on Public Provident Fund investments",
+    icon: Landmark,
+    href: "/ppf-calculator",
   },
   {
     title: "EMI Calculator",

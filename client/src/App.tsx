@@ -10,6 +10,7 @@ import LumpsumCalculator from "@/pages/LumpsumCalculator";
 import EmiCalculator from "@/pages/EmiCalculator";
 import CreditCardCalculator from "@/pages/CreditCardCalculator";
 import InterestCalculator from "@/pages/InterestCalculator";
+import PPFCalculator from "@/pages/PPFCalculator";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
           <Route path="/emi-calculator" component={EmiCalculator} />
           <Route path="/credit-card-calculator" component={CreditCardCalculator} />
           <Route path="/interest-calculator" component={InterestCalculator} />
+          <Route path="/ppf-calculator" component={PPFCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>
