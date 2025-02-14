@@ -10,6 +10,7 @@ const navigation = [
   { name: "Credit Card", href: "/credit-card-calculator" },
   { name: "Interest", href: "/interest-calculator" },
   { name: "PPF Calculator", href: "/ppf-calculator" },
+  { name: "FD Calculator", href: "/fd-calculator" },
 ];
 
 export default function Navbar() {
