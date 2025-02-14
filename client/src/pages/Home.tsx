@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Calculator, CreditCard, Wallet } from "lucide-react";
+import { Calculator, CreditCard, Wallet, PiggyBank } from "lucide-react";
 import { Link } from "wouter";
 
 const features = [
@@ -8,6 +8,12 @@ const features = [
     description: "Calculate returns on systematic investment plans",
     icon: Calculator,
     href: "/sip-calculator",
+  },
+  {
+    title: "Lumpsum Calculator",
+    description: "Calculate returns on one-time investments",
+    icon: PiggyBank,
+    href: "/lumpsum-calculator",
   },
   {
     title: "EMI Calculator",
@@ -35,7 +41,7 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2">
         {features.map((feature) => (
           <Link key={feature.title} href={feature.href}>
             <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
