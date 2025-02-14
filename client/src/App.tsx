@@ -12,6 +12,7 @@ import CreditCardCalculator from "@/pages/CreditCardCalculator";
 import InterestCalculator from "@/pages/InterestCalculator";
 import PPFCalculator from "@/pages/PPFCalculator";
 import FDCalculator from "@/pages/FDCalculator";
+import RDCalculator from "@/pages/RDCalculator";
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function Router() {
           <Route path="/interest-calculator" component={InterestCalculator} />
           <Route path="/ppf-calculator" component={PPFCalculator} />
           <Route path="/fd-calculator" component={FDCalculator} />
+          <Route path="/rd-calculator" component={RDCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>

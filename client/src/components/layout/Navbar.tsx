@@ -11,6 +11,7 @@ const navigation = [
   { name: "Interest", href: "/interest-calculator" },
   { name: "PPF Calculator", href: "/ppf-calculator" },
   { name: "FD Calculator", href: "/fd-calculator" },
+  { name: "RD Calculator", href: "/rd-calculator" },
 ];
 
 export default function Navbar() {

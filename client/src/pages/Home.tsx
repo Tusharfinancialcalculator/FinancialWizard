@@ -1,5 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Calculator, CreditCard, Wallet, PiggyBank, Landmark, Building2 } from "lucide-react";
+import {
+  Calculator,
+  CreditCard,
+  Wallet,
+  PiggyBank,
+  Landmark,
+  Building2,
+  Coins,
+} from "lucide-react";
 import { Link } from "wouter";
 
 const features = [
@@ -26,6 +34,12 @@ const features = [
     description: "Calculate returns on fixed deposits",
     icon: Building2,
     href: "/fd-calculator",
+  },
+  {
+    title: "RD Calculator",
+    description: "Calculate returns on recurring deposits",
+    icon: Coins,
+    href: "/rd-calculator",
   },
   {
     title: "EMI Calculator",
