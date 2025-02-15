@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { Calculator } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -49,7 +50,7 @@ export default function Navbar() {
   const [location] = useLocation();
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-background border-b">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
@@ -61,49 +62,48 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="hidden md:block">
-            <div className="flex items-center space-x-4">
-              {navigation.map((item) => (
-                item.items ? (
-                  <div key={item.name} className="relative group">
-                    <button className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
-                      {item.name}
-                    </button>
-                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block z-50">
-                      <div className="py-1" role="menu">
-                        {item.items.map((subItem) => (
-                          <Link
-                            key={subItem.name}
-                            href={subItem.href}
-                            className={cn(
-                              "block px-4 py-2 text-sm",
-                              location === subItem.href
-                                ? "bg-primary text-primary-foreground"
-                                : "text-gray-700 hover:bg-gray-100"
-                            )}
-                          >
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
+          <div className="hidden md:flex items-center space-x-4">
+            {navigation.map((item) => (
+              item.items ? (
+                <div key={item.name} className="relative group">
+                  <button className="px-3 py-2 rounded-md text-sm font-medium text-foreground hover:bg-muted">
+                    {item.name}
+                  </button>
+                  <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-background ring-1 ring-black ring-opacity-5 hidden group-hover:block z-50">
+                    <div className="py-1" role="menu">
+                      {item.items.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          href={subItem.href}
+                          className={cn(
+                            "block px-4 py-2 text-sm",
+                            location === subItem.href
+                              ? "bg-primary text-primary-foreground"
+                              : "text-foreground hover:bg-muted"
+                          )}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
                     </div>
                   </div>
-                ) : (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={cn(
-                      "px-3 py-2 rounded-md text-sm font-medium",
-                      location === item.href
-                        ? "bg-primary text-primary-foreground"
-                        : "text-gray-600 hover:bg-gray-100"
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                )
-              ))}
-            </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "px-3 py-2 rounded-md text-sm font-medium",
+                    location === item.href
+                      ? "bg-primary text-primary-foreground"
+                      : "text-foreground hover:bg-muted"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              )
+            ))}
+            <ThemeToggle />
           </div>
         </div>
       </div>

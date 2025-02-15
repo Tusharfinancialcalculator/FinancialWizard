@@ -2,6 +2,7 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "./lib/theme-provider";
 import Navbar from "@/components/layout/Navbar";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
@@ -37,7 +38,7 @@ import StockAveragePriceCalculator from "@/pages/StockAveragePriceCalculator";
 
 function Router() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <Switch>
@@ -81,8 +82,10 @@ function Router() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <ThemeProvider defaultTheme="light" storageKey="calculator-theme">
+        <Router />
+        <Toaster />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
