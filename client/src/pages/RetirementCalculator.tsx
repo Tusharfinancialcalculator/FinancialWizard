@@ -14,9 +14,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateRetirement } from "@/lib/calculators";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, BadgeDollarSign } from "lucide-react";
 
 const formSchema = z.object({
   currentAge: z.string().transform(Number).pipe(
@@ -50,6 +57,7 @@ const formSchema = z.object({
   annualInvestmentIncrease: z.string().transform(Number).pipe(
     z.number().min(0, "Annual investment increase cannot be negative")
   ),
+  fireType: z.enum(["lean", "mid", "fat"]),
 });
 
 type FormValues = {
@@ -62,6 +70,25 @@ type FormValues = {
   inflationRate: string;
   annualExpenseIncrease: string;
   annualInvestmentIncrease: string;
+  fireType: "lean" | "mid" | "fat";
+};
+
+const fireTypeDescriptions = {
+  lean: {
+    title: "Lean FIRE",
+    description: "Conservative approach with 3.33% withdrawal rate (30x annual expenses). Prioritizes financial security with a larger safety margin.",
+    multiplier: 30,
+  },
+  mid: {
+    title: "Mid FIRE",
+    description: "Traditional approach with 4% withdrawal rate (25x annual expenses). Balanced between security and lifestyle maintenance.",
+    multiplier: 25,
+  },
+  fat: {
+    title: "Fat FIRE",
+    description: "Aggressive approach with 5% withdrawal rate (20x annual expenses). Aims for a more luxurious retirement lifestyle.",
+    multiplier: 20,
+  },
 };
 
 export default function RetirementCalculator() {
@@ -79,6 +106,7 @@ export default function RetirementCalculator() {
       inflationRate: "6",
       annualExpenseIncrease: "0",
       annualInvestmentIncrease: "0",
+      fireType: "mid",
     },
   });
 
@@ -92,7 +120,8 @@ export default function RetirementCalculator() {
       Number(data.expectedReturn),
       Number(data.inflationRate),
       Number(data.annualExpenseIncrease),
-      Number(data.annualInvestmentIncrease)
+      Number(data.annualInvestmentIncrease),
+      data.fireType
     );
     setResults(result);
   }
@@ -135,6 +164,37 @@ export default function RetirementCalculator() {
                     )}
                   />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="fireType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>FIRE Strategy</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select FIRE strategy" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(fireTypeDescriptions).map(([key, { title, description }]) => (
+                            <SelectItem key={key} value={key}>
+                              <div className="flex flex-col">
+                                <span className="font-medium">{title}</span>
+                                <span className="text-xs text-muted-foreground">{description}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}
@@ -260,11 +320,18 @@ export default function RetirementCalculator() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">How the calculations work</CardTitle>
+                <CardTitle className="text-lg">Understanding Your FIRE Strategy</CardTitle>
               </CardHeader>
               <CardContent className="p-6 text-sm text-muted-foreground space-y-2">
+                <div className="flex items-center gap-2 text-primary">
+                  <BadgeDollarSign className="h-5 w-5" />
+                  <p className="font-medium">
+                    Withdrawal Rate: {results.withdrawalRate.toFixed(2)}%
+                  </p>
+                </div>
                 <p>
-                  <strong>Required Corpus:</strong> Based on the 4% rule, which suggests you need 25 times your annual expenses to sustain a 30-year retirement. Your expenses are adjusted for inflation and any annual increases.
+                  <strong>Required Corpus:</strong> Based on your selected FIRE strategy, which uses a {results.withdrawalRate.toFixed(2)}% withdrawal rate
+                  ({Math.round(100 / results.withdrawalRate)}x annual expenses). This approach is designed to sustain your retirement for 30+ years.
                 </p>
                 <p>
                   <strong>Expected Corpus:</strong> Combines your current savings (grown at the expected return rate) with your monthly investments (increased annually if specified) until retirement.
@@ -297,7 +364,7 @@ export default function RetirementCalculator() {
                     ₹{Math.round(results.requiredCorpus).toLocaleString()}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    To sustain expenses for 30 years post retirement
+                    Based on {results.withdrawalRate.toFixed(2)}% withdrawal rate
                   </p>
                 </div>
 

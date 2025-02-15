@@ -285,7 +285,8 @@ export function calculateRetirement(
   expectedReturn: number,
   inflationRate: number = 6,
   annualExpenseIncrease: number = 0,
-  annualInvestmentIncrease: number = 0
+  annualInvestmentIncrease: number = 0,
+  fireType: "lean" | "mid" | "fat" = "mid"
 ) {
   const yearsToRetirement = retirementAge - currentAge;
   const yearsPostRetirement = 85 - retirementAge;
@@ -294,9 +295,12 @@ export function calculateRetirement(
   const futureMonthlyExpenses = monthlyExpenses * 
     Math.pow(1 + (inflationRate + annualExpenseIncrease) / 100, yearsToRetirement);
 
-  // Required corpus calculation using the 4% rule (25 times annual expenses)
-  // This ensures the corpus lasts for approximately 30 years post retirement
-  const requiredCorpus = (futureMonthlyExpenses * 12) / 0.04;
+  // Required corpus calculation based on FIRE type
+  // Lean FIRE: 30x annual expenses (3.33% withdrawal rate for more safety)
+  // Mid FIRE: 25x annual expenses (4% withdrawal rate - traditional)
+  // Fat FIRE: 20x annual expenses (5% withdrawal rate - more aggressive)
+  const multiplier = fireType === "lean" ? 30 : fireType === "fat" ? 20 : 25;
+  const requiredCorpus = futureMonthlyExpenses * 12 * multiplier;
 
   // Calculate how current savings will grow by retirement
   const currentCorpus = currentSavings *
@@ -350,6 +354,7 @@ export function calculateRetirement(
     yearlyData,
     futureMonthlyExpenses,
     shortfall,
+    withdrawalRate: (1 / multiplier) * 100,
   };
 }
 
