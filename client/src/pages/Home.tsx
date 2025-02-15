@@ -17,6 +17,9 @@ import {
   PercentCircle,
   TrendingUp,
   Receipt,
+  Banknote,
+  LineChart,
+  GraduationCap,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -34,10 +37,28 @@ const features = [
     href: "/step-up-sip-calculator",
   },
   {
+    title: "CAGR Calculator",
+    description: "Find the compound annual growth rate of investments",
+    icon: LineChart,
+    href: "/cagr-calculator",
+  },
+  {
     title: "Lumpsum Calculator",
     description: "Calculate returns on one-time investments",
     icon: PiggyBank,
     href: "/lumpsum-calculator",
+  },
+  {
+    title: "Gratuity Calculator",
+    description: "Determine gratuity payouts upon retirement",
+    icon: Banknote,
+    href: "/gratuity-calculator",
+  },
+  {
+    title: "APY Calculator",
+    description: "Calculate monthly investments under Atal Pension Yojana",
+    icon: GraduationCap,
+    href: "/apy-calculator",
   },
   {
     title: "Compound Interest",
