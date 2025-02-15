@@ -24,16 +24,10 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateCompoundInterest } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Principal amount must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  time: z.string().transform(Number).pipe(
-    z.number().positive("Time period must be positive")
-  ),
-  frequency: z.string().transform(Number),
+  principal: z.coerce.number().positive("Principal amount must be positive"),
+  rate: z.coerce.number().positive("Interest rate must be positive"),
+  time: z.coerce.number().positive("Time period must be positive"),
+  frequency: z.coerce.number(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -51,10 +45,10 @@ export default function InterestCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "10000",
-      rate: "10",
-      time: "5",
-      frequency: "1",
+      principal: 10000,
+      rate: 10,
+      time: 5,
+      frequency: 1,
     },
   });
 
@@ -71,7 +65,7 @@ export default function InterestCalculator() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Interest Calculator</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">
@@ -126,7 +120,7 @@ export default function InterestCalculator() {
                     <FormItem>
                       <FormLabel>Compounding Frequency</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => field.onChange(Number(value))}
                         defaultValue={field.value.toString()}
                       >
                         <FormControl>

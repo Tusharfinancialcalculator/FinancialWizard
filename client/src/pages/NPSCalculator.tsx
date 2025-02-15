@@ -16,21 +16,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import ResultsChart from "@/components/calculators/ResultsChart";
 
 const formSchema = z.object({
-  monthlyContribution: z.string().transform(Number).pipe(
-    z.number().positive("Monthly contribution must be positive")
-  ),
-  currentAge: z.string().transform(Number).pipe(
-    z.number().min(18, "Age must be at least 18").max(65, "Age must be less than 65")
-  ),
-  retirementAge: z.string().transform(Number).pipe(
-    z.number().min(60, "Retirement age must be at least 60")
-  ),
-  equityAllocation: z.string().transform(Number).pipe(
-    z.number().min(0, "Equity allocation must be between 0 and 75").max(75, "Maximum equity allocation is 75%")
-  ),
-  expectedReturn: z.string().transform(Number).pipe(
-    z.number().positive("Expected return must be positive")
-  ),
+  monthlyContribution: z.coerce.number().positive("Monthly contribution must be positive"),
+  currentAge: z.coerce.number().min(18, "Age must be at least 18").max(65, "Age must be less than 65"),
+  retirementAge: z.coerce.number().min(60, "Retirement age must be at least 60"),
+  equityAllocation: z.coerce.number()
+    .min(0, "Equity allocation must be between 0 and 75")
+    .max(75, "Maximum equity allocation is 75%"),
+  expectedReturn: z.coerce.number().positive("Expected return must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -75,11 +67,11 @@ export default function NPSCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      monthlyContribution: "5000",
-      currentAge: "30",
-      retirementAge: "60",
-      equityAllocation: "50",
-      expectedReturn: "10",
+      monthlyContribution: 5000,
+      currentAge: 30,
+      retirementAge: 60,
+      equityAllocation: 50,
+      expectedReturn: 10,
     },
   });
 
