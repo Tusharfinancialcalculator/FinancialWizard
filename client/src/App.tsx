@@ -24,6 +24,7 @@ import NPSCalculator from "@/pages/NPSCalculator";
 import CAGRCalculator from "@/pages/CAGRCalculator";
 import GratuityCalculator from "@/pages/GratuityCalculator";
 import APYCalculator from "@/pages/APYCalculator";
+import GSTCalculator from "@/pages/GSTCalculator";
 
 function Router() {
   return (
@@ -51,6 +52,7 @@ function Router() {
           <Route path="/cagr-calculator" component={CAGRCalculator} />
           <Route path="/gratuity-calculator" component={GratuityCalculator} />
           <Route path="/apy-calculator" component={APYCalculator} />
+          <Route path="/gst-calculator" component={GSTCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>

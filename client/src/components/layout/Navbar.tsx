@@ -26,6 +26,7 @@ const navigation = [
   ]},
   { name: "Tax & Salary", items: [
     { name: "Income Tax", href: "/income-tax-calculator" },
+    { name: "GST Calculator", href: "/gst-calculator" },
     { name: "HRA Calculator", href: "/hra-calculator" },
     { name: "Gratuity Calculator", href: "/gratuity-calculator" },
   ]},
