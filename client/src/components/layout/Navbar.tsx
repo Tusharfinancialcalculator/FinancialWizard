@@ -15,10 +15,12 @@ const navigation = [
     { name: "RD Calculator", href: "/rd-calculator" },
     { name: "NPS Calculator", href: "/nps-calculator" },
     { name: "APY Calculator", href: "/apy-calculator" },
+    { name: "Brokerage Calculator", href: "/brokerage-calculator" },
   ]},
   { name: "Interest", items: [
     { name: "Simple Interest", href: "/simple-interest-calculator" },
     { name: "Compound Interest", href: "/compound-interest-calculator" },
+    { name: "Flat vs Reducing Rate", href: "/flat-vs-reducing-calculator" },
   ]},
   { name: "Loans", items: [
     { name: "Home Loan EMI", href: "/home-loan-calculator" },
