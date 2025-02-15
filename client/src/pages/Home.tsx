@@ -13,6 +13,8 @@ import {
   Car,
   Building,
   Clock,
+  Calculator as CalcIcon,
+  PercentCircle,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -28,6 +30,18 @@ const features = [
     description: "Calculate returns on one-time investments",
     icon: PiggyBank,
     href: "/lumpsum-calculator",
+  },
+  {
+    title: "Compound Interest",
+    description: "Calculate compound interest with flexible compounding periods",
+    icon: PercentCircle,
+    href: "/compound-interest-calculator",
+  },
+  {
+    title: "NSC Calculator",
+    description: "Calculate returns on National Savings Certificate investments",
+    icon: CalcIcon,
+    href: "/nsc-calculator",
   },
   {
     title: "PPF Calculator",
