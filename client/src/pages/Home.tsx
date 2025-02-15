@@ -15,6 +15,8 @@ import {
   Clock,
   Calculator as CalcIcon,
   PercentCircle,
+  TrendingUp,
+  Receipt,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -24,6 +26,12 @@ const features = [
     description: "Calculate returns on systematic investment plans",
     icon: Calculator,
     href: "/sip-calculator",
+  },
+  {
+    title: "Step-Up SIP Calculator",
+    description: "Calculate SIP returns with annual investment increase",
+    icon: TrendingUp,
+    href: "/step-up-sip-calculator",
   },
   {
     title: "Lumpsum Calculator",
@@ -66,6 +74,12 @@ const features = [
     description: "Calculate interest on loans and savings",
     icon: Percent,
     href: "/simple-interest-calculator",
+  },
+  {
+    title: "Income Tax Calculator",
+    description: "Calculate your income tax liability",
+    icon: Receipt,
+    href: "/income-tax-calculator",
   },
   {
     title: "NPS Calculator",
