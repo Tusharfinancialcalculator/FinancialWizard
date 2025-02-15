@@ -165,36 +165,39 @@ export default function RetirementCalculator() {
                   />
                 </div>
 
-                <FormField
-                  control={form.control}
-                  name="fireType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>FIRE Strategy</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select FIRE strategy" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="w-[400px]">
-                          {Object.entries(fireTypeDescriptions).map(([key, { title, description }]) => (
-                            <SelectItem key={key} value={key} className="py-3">
-                              <div className="flex flex-col gap-1">
-                                <span className="font-medium">{title}</span>
-                                <span className="text-xs text-muted-foreground whitespace-normal">{description}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* FIRE Strategy Selection - Full Width */}
+                <div className="col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="fireType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>FIRE Strategy</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select FIRE strategy" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="w-[300px] md:w-[400px]">
+                            {Object.entries(fireTypeDescriptions).map(([key, { title, description }]) => (
+                              <SelectItem key={key} value={key} className="py-3">
+                                <div className="flex flex-col gap-1">
+                                  <span className="font-medium">{title}</span>
+                                  <span className="text-xs text-muted-foreground whitespace-normal break-words">{description}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
