@@ -28,6 +28,7 @@ import GSTCalculator from "@/pages/GSTCalculator";
 import FlatVsReducingCalculator from "@/pages/FlatVsReducingCalculator";
 import BrokerageCalculator from "@/pages/BrokerageCalculator";
 import MarginCalculator from "@/pages/MarginCalculator";
+import TDSCalculator from "@/pages/TDSCalculator";
 
 function Router() {
   return (
@@ -59,6 +60,7 @@ function Router() {
           <Route path="/flat-vs-reducing-calculator" component={FlatVsReducingCalculator} />
           <Route path="/brokerage-calculator" component={BrokerageCalculator} />
           <Route path="/margin-calculator" component={MarginCalculator} />
+          <Route path="/tds-calculator" component={TDSCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>

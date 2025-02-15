@@ -790,3 +790,45 @@ export function calculateMargin(
     marginPercentage: Math.round(marginPercentage * 100) / 100,
   };
 }
+
+export interface TDSCalculationResult {
+  grossAmount: number;
+  tdsAmount: number;
+  netAmount: number;
+  tdsRate: number;
+  tdsThreshold: number;
+  isTDSApplicable: boolean;
+}
+
+export function calculateTDS(
+  amount: number,
+  paymentType: "salary" | "professional_fees" | "rent" | "commission" | "interest" | "contractor",
+  isNonResident: boolean = false
+): TDSCalculationResult {
+  // TDS rates and thresholds for different payment types
+  const tdsRates = {
+    salary: { resident: 0.10, nonResident: 0.20, threshold: 50000 },
+    professional_fees: { resident: 0.10, nonResident: 0.20, threshold: 30000 },
+    rent: { resident: 0.10, nonResident: 0.30, threshold: 20000 },
+    commission: { resident: 0.05, nonResident: 0.20, threshold: 15000 },
+    interest: { resident: 0.10, nonResident: 0.20, threshold: 40000 },
+    contractor: { resident: 0.02, nonResident: 0.20, threshold: 30000 },
+  };
+
+  const rateInfo = tdsRates[paymentType];
+  const tdsRate = isNonResident ? rateInfo.nonResident : rateInfo.resident;
+  const threshold = rateInfo.threshold;
+  const isTDSApplicable = amount >= threshold;
+
+  const tdsAmount = isTDSApplicable ? amount * tdsRate : 0;
+  const netAmount = amount - tdsAmount;
+
+  return {
+    grossAmount: Math.round(amount * 100) / 100,
+    tdsAmount: Math.round(tdsAmount * 100) / 100,
+    netAmount: Math.round(netAmount * 100) / 100,
+    tdsRate: tdsRate * 100,
+    tdsThreshold: threshold,
+    isTDSApplicable,
+  };
+}
