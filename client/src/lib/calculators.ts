@@ -2,7 +2,12 @@ export function calculateSIP(
   monthlyInvestment: number,
   years: number,
   expectedReturn: number
-) {
+): {
+  totalInvestment: number;
+  totalReturns: number;
+  maturityValue: number;
+  monthlyData: Array<{ label: string; value: number }>;
+} {
   const monthlyRate = expectedReturn / 12 / 100;
   const months = years * 12;
 
@@ -281,7 +286,7 @@ export function calculateSimpleInterest(
 export function calculateHRA(
   basicSalary: number,
   rentPaid: number,
-  cityType: 'metro' | 'non-metro'
+  cityType: "metro" | "non-metro"
 ): {
   hraReceived: number;
   hraExemption: number;
@@ -289,7 +294,7 @@ export function calculateHRA(
   monthlyData: Array<{ label: string; value: number }>;
 } {
   const hraReceived = basicSalary * 0.4;
-  const cityMultiplier = cityType === 'metro' ? 0.5 : 0.4;
+  const cityMultiplier = cityType === "metro" ? 0.5 : 0.4;
   const cityBasedExemption = basicSalary * cityMultiplier;
   const rentBasedExemption = rentPaid - (basicSalary * 0.1);
 
@@ -464,7 +469,8 @@ export function calculateStepUpSIP(
 
 export function calculateIncomeTax(
   income: number,
-  deductions: number = 0
+  deductions: number = 0,
+  regime: "old" | "new" = "new"
 ): {
   taxableIncome: number;
   taxAmount: number;
@@ -476,8 +482,8 @@ export function calculateIncomeTax(
   grossIncome: number;
   takeHome: number;
 } {
-  // New tax regime slabs (FY 2024-25)
-  const slabs = [
+  // Tax regime slabs (FY 2024-25)
+  const newRegimeSlabs = [
     { limit: 300000, rate: 0 },    // 0-3L: 0%
     { limit: 600000, rate: 5 },    // 3-6L: 5%
     { limit: 900000, rate: 10 },   // 6-9L: 10%
@@ -486,8 +492,16 @@ export function calculateIncomeTax(
     { limit: Infinity, rate: 30 }, // >15L: 30%
   ];
 
+  const oldRegimeSlabs = [
+    { limit: 250000, rate: 0 },    // 0-2.5L: 0%
+    { limit: 500000, rate: 5 },    // 2.5-5L: 5%
+    { limit: 1000000, rate: 20 },  // 5-10L: 20%
+    { limit: Infinity, rate: 30 }, // >10L: 30%
+  ];
+
+  const slabs = regime === "new" ? newRegimeSlabs : oldRegimeSlabs;
   const grossIncome = income;
-  const taxableIncome = Math.max(0, income - deductions);
+  const taxableIncome = Math.max(0, income - (regime === "old" ? deductions : 0));
   let remainingIncome = taxableIncome;
   let totalTax = 0;
   let slabwiseBreakup = [];
@@ -515,7 +529,8 @@ export function calculateIncomeTax(
     if (remainingIncome <= 0) break;
   }
 
-  const taxAmount = Math.round(totalTax);
+  // Calculate surcharge and cess if applicable
+  let taxAmount = Math.round(totalTax);
   const effectiveTaxRate = Number((totalTax / (taxableIncome || 1) * 100).toFixed(2));
   const takeHome = grossIncome - taxAmount;
 
