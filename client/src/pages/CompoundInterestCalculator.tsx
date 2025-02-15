@@ -24,19 +24,25 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateCompoundInterest } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Principal amount must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  time: z.string().transform(Number).pipe(
-    z.number().positive("Time period must be positive")
-  ),
-  frequency: z.enum(["yearly", "half-yearly", "quarterly", "monthly"]),
+  principal: z.coerce.number().positive("Principal amount must be positive"),
+  rate: z.coerce.number().positive("Interest rate must be positive"),
+  time: z.coerce.number().positive("Time period must be positive"),
+  frequency: z.coerce.number(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = {
+  principal: number;
+  rate: number;
+  time: number;
+  frequency: number;
+};
+
+const compoundingFrequencies = [
+  { label: "Annually", value: 1 },
+  { label: "Semi-annually", value: 2 },
+  { label: "Quarterly", value: 4 },
+  { label: "Monthly", value: 12 },
+];
 
 export default function CompoundInterestCalculator() {
   const [results, setResults] = useState<ReturnType<typeof calculateCompoundInterest>>();
@@ -44,18 +50,18 @@ export default function CompoundInterestCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "10000",
-      rate: "10",
-      time: "5",
-      frequency: "yearly",
+      principal: 10000,
+      rate: 10,
+      time: 5,
+      frequency: 1,
     },
   });
 
   function onSubmit(data: FormValues) {
     const result = calculateCompoundInterest(
-      Number(data.principal),
-      Number(data.rate),
-      Number(data.time),
+      data.principal,
+      data.rate,
+      data.time,
       data.frequency
     );
     setResults(result);
@@ -119,8 +125,8 @@ export default function CompoundInterestCalculator() {
                     <FormItem>
                       <FormLabel>Compounding Frequency</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        defaultValue={field.value.toString()}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -128,10 +134,11 @@ export default function CompoundInterestCalculator() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="yearly">Yearly</SelectItem>
-                          <SelectItem value="half-yearly">Half-Yearly</SelectItem>
-                          <SelectItem value="quarterly">Quarterly</SelectItem>
-                          <SelectItem value="monthly">Monthly</SelectItem>
+                          {compoundingFrequencies.map((freq) => (
+                            <SelectItem key={freq.value} value={freq.value.toString()}>
+                              {freq.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -156,23 +163,23 @@ export default function CompoundInterestCalculator() {
                     Principal Amount
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.principal).toLocaleString()}
+                    ₹{Math.round(results.amount - results.interest).toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Interest
+                    Interest Earned
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalInterest).toLocaleString()}
+                    ₹{Math.round(results.interest).toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Maturity Value
+                    Maturity Amount
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.maturityValue).toLocaleString()}
+                    ₹{Math.round(results.amount).toLocaleString()}
                   </p>
                 </div>
               </CardContent>

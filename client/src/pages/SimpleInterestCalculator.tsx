@@ -17,15 +17,9 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateSimpleInterest } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Principal amount must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  time: z.string().transform(Number).pipe(
-    z.number().positive("Time period must be positive")
-  ),
+  principal: z.coerce.number().positive("Principal amount must be positive"),
+  rate: z.coerce.number().positive("Interest rate must be positive"),
+  time: z.coerce.number().positive("Time period must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -36,9 +30,9 @@ export default function SimpleInterestCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "10000",
-      rate: "5",
-      time: "5",
+      principal: 10000,
+      rate: 5,
+      time: 5,
     },
   });
 
@@ -54,7 +48,7 @@ export default function SimpleInterestCalculator() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Simple Interest Calculator</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">
