@@ -33,6 +33,7 @@ const navigation = [
     { name: "GST Calculator", href: "/gst-calculator" },
     { name: "HRA Calculator", href: "/hra-calculator" },
     { name: "Gratuity Calculator", href: "/gratuity-calculator" },
+    { name: "Salary Calculator", href: "/salary-calculator" },
   ]},
   { name: "Planning", items: [
     { name: "Retirement", href: "/retirement-calculator" },

@@ -29,6 +29,7 @@ import FlatVsReducingCalculator from "@/pages/FlatVsReducingCalculator";
 import BrokerageCalculator from "@/pages/BrokerageCalculator";
 import MarginCalculator from "@/pages/MarginCalculator";
 import TDSCalculator from "@/pages/TDSCalculator";
+import SalaryCalculator from "@/pages/SalaryCalculator";
 
 function Router() {
   return (
@@ -61,6 +62,7 @@ function Router() {
           <Route path="/brokerage-calculator" component={BrokerageCalculator} />
           <Route path="/margin-calculator" component={MarginCalculator} />
           <Route path="/tds-calculator" component={TDSCalculator} />
+          <Route path="/salary-calculator" component={SalaryCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>

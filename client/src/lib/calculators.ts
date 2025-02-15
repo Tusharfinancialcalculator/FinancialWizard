@@ -832,3 +832,76 @@ export function calculateTDS(
     isTDSApplicable,
   };
 }
+
+export interface SalaryCalculationResult {
+  basicSalary: number;
+  grossSalary: number;
+  deductions: {
+    providentFund: number;
+    professionalTax: number;
+    incomeTax: number;
+  };
+  netSalary: number;
+  monthlyBreakdown: {
+    hra: number;
+    basicAllowance: number;
+    specialAllowance: number;
+    conveyanceAllowance: number;
+    medicalAllowance: number;
+    otherAllowances: number;
+  };
+}
+
+export function calculateSalary(
+  basicSalary: number,
+  hra: number = 0,
+  basicAllowance: number = 0,
+  specialAllowance: number = 0,
+  conveyanceAllowance: number = 0,
+  medicalAllowance: number = 0,
+  otherAllowances: number = 0,
+  extraDeductions: number = 0
+): SalaryCalculationResult {
+  // Calculate monthly allowances
+  const monthlyBreakdown = {
+    hra,
+    basicAllowance,
+    specialAllowance,
+    conveyanceAllowance,
+    medicalAllowance,
+    otherAllowances,
+  };
+
+  // Calculate gross salary
+  const grossSalary = basicSalary +
+    Object.values(monthlyBreakdown).reduce((sum, value) => sum + value, 0);
+
+  // Calculate standard deductions
+  const providentFund = Math.min(basicSalary * 0.12, 1800); // 12% of basic, capped at 1800
+  const professionalTax = grossSalary > 15000 ? 200 : 0; // PT varies by state, using common slab
+
+  // Simplified income tax calculation (actual calculation should use tax slabs)
+  const annualGrossSalary = grossSalary * 12;
+  const incomeTax = annualGrossSalary > 500000 ? 
+    (grossSalary * 0.1) : 0; // Simplified 10% tax above 5L annually
+
+  // Calculate total deductions
+  const deductions = {
+    providentFund,
+    professionalTax,
+    incomeTax,
+  };
+
+  const totalDeductions = Object.values(deductions).reduce((sum, value) => sum + value, 0) + extraDeductions;
+
+  // Calculate net salary
+  const netSalary = grossSalary - totalDeductions;
+
+  return {
+    basicSalary,
+    grossSalary,
+    deductions,
+    netSalary,
+    monthlyBreakdown,
+  };
+}
