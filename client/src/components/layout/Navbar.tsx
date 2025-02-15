@@ -56,7 +56,7 @@ export default function Navbar() {
                     <button className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
                       {item.name}
                     </button>
-                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block">
+                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block z-50">
                       <div className="py-1" role="menu">
                         {item.items.map((subItem) => (
                           <Link
