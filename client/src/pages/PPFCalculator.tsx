@@ -17,12 +17,13 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculatePPF } from "@/lib/calculators";
 
 const formSchema = z.object({
-  yearlyInvestment: z.string().transform(Number).pipe(
-    z.number().positive("Investment amount must be positive")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().min(15, "PPF has a minimum lock-in period of 15 years").max(50, "Maximum investment period is 50 years")
-  ),
+  yearlyInvestment: z.coerce
+    .number()
+    .positive("Investment amount must be positive"),
+  years: z.coerce
+    .number()
+    .min(15, "PPF has a minimum lock-in period of 15 years")
+    .max(50, "Maximum investment period is 50 years"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -33,8 +34,8 @@ export default function PPFCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      yearlyInvestment: "150000",
-      years: "15",
+      yearlyInvestment: 150000,
+      years: 15,
     },
   });
 
@@ -46,7 +47,7 @@ export default function PPFCalculator() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">PPF Calculator</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">

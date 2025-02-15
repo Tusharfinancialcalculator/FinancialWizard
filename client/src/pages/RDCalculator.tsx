@@ -17,15 +17,15 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateRD } from "@/lib/calculators";
 
 const formSchema = z.object({
-  monthlyInvestment: z.string().transform(Number).pipe(
-    z.number().positive("Monthly investment must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().positive("Years must be positive")
-  ),
+  monthlyInvestment: z.coerce
+    .number()
+    .positive("Monthly investment must be positive"),
+  rate: z.coerce
+    .number()
+    .positive("Interest rate must be positive"),
+  years: z.coerce
+    .number()
+    .positive("Years must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -36,17 +36,17 @@ export default function RDCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      monthlyInvestment: "5000",
-      rate: "7",
-      years: "5",
+      monthlyInvestment: 5000,
+      rate: 7,
+      years: 5,
     },
   });
 
   function onSubmit(data: FormValues) {
     const result = calculateRD(
-      Number(data.monthlyInvestment),
-      Number(data.rate),
-      Number(data.years)
+      data.monthlyInvestment,
+      data.rate,
+      data.years
     );
     setResults(result);
   }

@@ -17,9 +17,9 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateNSC } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Investment amount must be positive")
-  ),
+  principal: z.coerce
+    .number()
+    .positive("Investment amount must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -30,12 +30,12 @@ export default function NSCCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "10000",
+      principal: 10000,
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateNSC(Number(data.principal));
+    const result = calculateNSC(data.principal);
     setResults(result);
   }
 
@@ -79,7 +79,7 @@ export default function NSCCalculator() {
                     Investment Amount
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.investment).toLocaleString()}
+                    ₹{Math.round(results.totalInvestment).toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -87,7 +87,7 @@ export default function NSCCalculator() {
                     Interest Earned
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.interestEarned).toLocaleString()}
+                    ₹{Math.round(results.totalInterest).toLocaleString()}
                   </p>
                 </div>
                 <div>

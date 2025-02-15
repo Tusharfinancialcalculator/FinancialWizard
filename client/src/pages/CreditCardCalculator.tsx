@@ -13,24 +13,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CreditCard, ShieldCheck, AlertTriangle } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CreditCard, ShieldCheck, AlertTriangle } from "lucide-react";
 
 const formSchema = z.object({
-  balance: z.string().transform(Number).pipe(
-    z.number().positive("Balance must be positive")
-  ),
-  apr: z.string().transform(Number).pipe(
-    z.number().positive("APR must be positive")
-  ),
-  minimumPayment: z.string().transform(Number).pipe(
-    z.number().positive("Minimum payment must be positive")
-  ),
+  balance: z.coerce
+    .number()
+    .positive("Balance must be positive"),
+  apr: z.coerce
+    .number()
+    .positive("APR must be positive"),
+  minimumPayment: z.coerce
+    .number()
+    .positive("Minimum payment must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -64,9 +64,9 @@ export default function CreditCardCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      balance: "10000",
-      apr: "18",
-      minimumPayment: "500",
+      balance: 10000,
+      apr: 18,
+      minimumPayment: 500,
     },
   });
 
