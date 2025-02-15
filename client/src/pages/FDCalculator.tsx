@@ -17,15 +17,9 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateFD } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Principal amount must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().positive("Years must be positive")
-  ),
+  principal: z.coerce.number().positive("Principal amount must be positive"),
+  rate: z.coerce.number().positive("Interest rate must be positive"),
+  years: z.coerce.number().positive("Years must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -36,17 +30,17 @@ export default function FDCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "100000",
-      rate: "7",
-      years: "5",
+      principal: 100000,
+      rate: 7,
+      years: 5,
     },
   });
 
   function onSubmit(data: FormValues) {
     const result = calculateFD(
-      Number(data.principal),
-      Number(data.rate),
-      Number(data.years)
+      data.principal,
+      data.rate,
+      data.years
     );
     setResults(result);
   }

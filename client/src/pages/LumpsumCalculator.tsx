@@ -17,15 +17,9 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateLumpsum } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Principal amount must be positive")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().positive("Years must be positive")
-  ),
-  expectedReturn: z.string().transform(Number).pipe(
-    z.number().positive("Return rate must be positive")
-  ),
+  principal: z.coerce.number().positive("Principal amount must be positive"),
+  years: z.coerce.number().positive("Years must be positive"),
+  expectedReturn: z.coerce.number().positive("Return rate must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -36,9 +30,9 @@ export default function LumpsumCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "100000",
-      years: "5",
-      expectedReturn: "12",
+      principal: 100000,
+      years: 5,
+      expectedReturn: 12,
     },
   });
 
@@ -54,7 +48,7 @@ export default function LumpsumCalculator() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Lumpsum Calculator</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">
