@@ -16,6 +16,7 @@ const navigation = [
     { name: "NPS Calculator", href: "/nps-calculator" },
     { name: "APY Calculator", href: "/apy-calculator" },
     { name: "Brokerage Calculator", href: "/brokerage-calculator" },
+    { name: "Margin Calculator", href: "/margin-calculator" },
   ]},
   { name: "Interest", items: [
     { name: "Simple Interest", href: "/simple-interest-calculator" },

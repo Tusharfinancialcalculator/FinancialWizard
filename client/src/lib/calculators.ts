@@ -127,7 +127,7 @@ export function calculatePPF(
   yearlyInvestment: number,
   years: number = 15
 ) {
-  const interestRate = 7.1 / 100; 
+  const interestRate = 7.1 / 100;
   let balance = 0;
   let totalInterest = 0;
   let yearlyData: Array<{ label: string; value: number }> = [];
@@ -335,9 +335,9 @@ export function calculateRetirement(
 
 export function calculateNSC(
   principal: number,
-  years: number = 5 
+  years: number = 5
 ) {
-  const interestRate = 6.8 / 100; 
+  const interestRate = 6.8 / 100;
   let balance = principal;
   let totalInterest = 0;
   let yearlyData: Array<{ label: string; value: number }> = [];
@@ -554,7 +554,7 @@ export function calculateAPY(
   const corpusAtMaturity = nearestSlab * 12 * 170;
 
   let yearlyData: Array<{ label: string; value: number }> = [];
-  const assumedReturnRate = 0.08; 
+  const assumedReturnRate = 0.08;
   let currentCorpus = 0;
 
   for (let i = 0; i <= yearsTillMaturity; i++) {
@@ -684,7 +684,7 @@ export function calculateBrokerage(
   buyPrice: number,
   sellPrice: number,
   quantity: number,
-  strikePrice?: number 
+  strikePrice?: number
 ) {
   const buyValue = buyPrice * quantity;
   const sellValue = sellPrice * quantity;
@@ -692,37 +692,37 @@ export function calculateBrokerage(
 
   let brokerage = 0;
   if (type === "delivery") {
-    brokerage = Math.min(totalTurnover * 0.0003, 20); 
+    brokerage = Math.min(totalTurnover * 0.0003, 20);
   } else if (type === "intraday" || type === "futures") {
-    brokerage = Math.min(totalTurnover * 0.0002, 20); 
+    brokerage = Math.min(totalTurnover * 0.0002, 20);
   } else {
-    brokerage = Math.min(40, totalTurnover * 0.0002); 
+    brokerage = Math.min(40, totalTurnover * 0.0002);
   }
 
   let stt = 0;
   if (type === "delivery") {
-    stt = (buyValue + sellValue) * 0.001; 
+    stt = (buyValue + sellValue) * 0.001;
   } else if (type === "intraday") {
-    stt = sellValue * 0.00025; 
+    stt = sellValue * 0.00025;
   } else if (type === "futures") {
-    stt = sellValue * 0.0001; 
+    stt = sellValue * 0.0001;
   } else {
-    stt = sellValue * 0.0005; 
+    stt = sellValue * 0.0005;
   }
 
-  const exchangeCharges = totalTurnover * 0.0000345; 
+  const exchangeCharges = totalTurnover * 0.0000345;
 
-  const gst = (brokerage + exchangeCharges) * 0.18; 
+  const gst = (brokerage + exchangeCharges) * 0.18;
 
-  const sebi = totalTurnover * 0.000001; 
+  const sebi = totalTurnover * 0.000001;
 
   let stampDuty = 0;
   if (type === "delivery") {
-    stampDuty = buyValue * 0.00015; 
+    stampDuty = buyValue * 0.00015;
   } else if (type === "intraday" || type === "futures") {
-    stampDuty = buyValue * 0.00003; 
+    stampDuty = buyValue * 0.00003;
   } else {
-    stampDuty = buyValue * 0.00003; 
+    stampDuty = buyValue * 0.00003;
   }
 
   const totalCharges = brokerage + stt + exchangeCharges + gst + sebi + stampDuty;
@@ -747,5 +747,46 @@ export function calculateBrokerage(
     netProfitLoss: Math.round(netProfitLoss * 100) / 100,
     breakEvenPriceUp: Math.round(breakEvenPriceUp * 100) / 100,
     breakEvenPriceDown: Math.round(breakEvenPriceDown * 100) / 100,
+  };
+}
+
+export function calculateMargin(
+  type: "equity" | "futures" | "options",
+  price: number,
+  quantity: number,
+  lotSize: number = 1,
+  volatility: number = 15
+) {
+  const totalValue = price * quantity * lotSize;
+
+  // VAR (Value at Risk) Margin - based on volatility
+  const varMargin = totalValue * (volatility / 100);
+
+  // Exposure Margin
+  let exposureMargin = 0;
+  if (type === "equity") {
+    exposureMargin = totalValue * 0.20; // 20% for equity delivery
+  } else if (type === "futures") {
+    exposureMargin = totalValue * 0.25; // 25% for futures
+  } else {
+    exposureMargin = totalValue * 0.15; // 15% for options
+  }
+
+  // SPAN Margin (simplified calculation)
+  let spanMargin = 0;
+  if (type === "futures" || type === "options") {
+    spanMargin = totalValue * (volatility / 100) * 1.5; // 1.5x of VAR for derivatives
+  }
+
+  const totalMargin = varMargin + exposureMargin + spanMargin;
+  const marginPercentage = (totalMargin / totalValue) * 100;
+
+  return {
+    totalValue: Math.round(totalValue * 100) / 100,
+    varMargin: Math.round(varMargin * 100) / 100,
+    exposureMargin: Math.round(exposureMargin * 100) / 100,
+    spanMargin: Math.round(spanMargin * 100) / 100,
+    totalMargin: Math.round(totalMargin * 100) / 100,
+    marginPercentage: Math.round(marginPercentage * 100) / 100,
   };
 }
