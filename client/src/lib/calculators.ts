@@ -380,3 +380,140 @@ export function calculateRetirement(
     yearlyData,
   };
 }
+
+export function calculateNSC(
+  principal: number,
+  years: number = 5 // NSC has a fixed 5-year term
+): {
+  totalInvestment: number;
+  totalInterest: number;
+  maturityValue: number;
+  yearlyData: Array<{ label: string; value: number }>;
+} {
+  const interestRate = 6.8 / 100; // Current NSC interest rate
+  let balance = principal;
+  let totalInterest = 0;
+  let yearlyData = [];
+
+  yearlyData.push({
+    label: "Year 0",
+    value: principal,
+  });
+
+  for (let i = 1; i <= years; i++) {
+    const interest = balance * interestRate;
+    totalInterest += interest;
+    balance += interest;
+    yearlyData.push({
+      label: `Year ${i}`,
+      value: Math.round(balance),
+    });
+  }
+
+  return {
+    totalInvestment: principal,
+    totalInterest,
+    maturityValue: balance,
+    yearlyData,
+  };
+}
+
+export function calculateStepUpSIP(
+  initialMonthlyInvestment: number,
+  years: number,
+  expectedReturn: number,
+  annualIncrement: number // Percentage increase per year
+): {
+  totalInvestment: number;
+  totalReturns: number;
+  maturityValue: number;
+  monthlyData: Array<{ label: string; value: number }>;
+} {
+  const monthlyRate = expectedReturn / 12 / 100;
+  const months = years * 12;
+  let monthlyInvestment = initialMonthlyInvestment;
+  let totalInvestment = 0;
+  let balance = 0;
+  let monthlyData = [];
+
+  for (let i = 0; i <= months; i++) {
+    // Increase investment at the start of each year (except first year)
+    if (i > 0 && i % 12 === 0) {
+      monthlyInvestment += (monthlyInvestment * annualIncrement) / 100;
+    }
+
+    if (i > 0) {
+      balance = (balance + monthlyInvestment) * (1 + monthlyRate);
+      totalInvestment += monthlyInvestment;
+    }
+
+    monthlyData.push({
+      label: `Month ${i}`,
+      value: Math.round(balance),
+    });
+  }
+
+  return {
+    totalInvestment,
+    totalReturns: balance - totalInvestment,
+    maturityValue: balance,
+    monthlyData,
+  };
+}
+
+export function calculateIncomeTax(
+  salary: number,
+  deductions: number = 0
+): {
+  taxableIncome: number;
+  taxAmount: number;
+  effectiveTaxRate: number;
+  slabwiseBreakup: Array<{
+    slab: string;
+    tax: number;
+  }>;
+} {
+  // New tax regime slabs (FY 2024-25)
+  const slabs = [
+    { limit: 300000, rate: 0 },    // 0-3L: 0%
+    { limit: 600000, rate: 5 },    // 3-6L: 5%
+    { limit: 900000, rate: 10 },   // 6-9L: 10%
+    { limit: 1200000, rate: 15 },  // 9-12L: 15%
+    { limit: 1500000, rate: 20 },  // 12-15L: 20%
+    { limit: Infinity, rate: 30 }, // >15L: 30%
+  ];
+
+  const taxableIncome = Math.max(0, salary - deductions);
+  let remainingIncome = taxableIncome;
+  let totalTax = 0;
+  let slabwiseBreakup = [];
+  let previousLimit = 0;
+
+  for (const slab of slabs) {
+    const slabIncome = Math.min(
+      Math.max(0, remainingIncome),
+      slab.limit - previousLimit
+    );
+    const slabTax = (slabIncome * slab.rate) / 100;
+
+    if (slabTax > 0) {
+      slabwiseBreakup.push({
+        slab: `${previousLimit.toLocaleString()}-${slab.limit === Infinity ? "Above" : slab.limit.toLocaleString()}`,
+        tax: slabTax,
+      });
+    }
+
+    totalTax += slabTax;
+    remainingIncome -= slabIncome;
+    previousLimit = slab.limit;
+
+    if (remainingIncome <= 0) break;
+  }
+
+  return {
+    taxableIncome,
+    taxAmount: totalTax,
+    effectiveTaxRate: (totalTax / taxableIncome) * 100,
+    slabwiseBreakup,
+  };
+}

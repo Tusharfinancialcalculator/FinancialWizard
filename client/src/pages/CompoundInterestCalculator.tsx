@@ -13,51 +13,57 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ResultsChart from "@/components/calculators/ResultsChart";
-import { calculateEMI } from "@/lib/calculators";
+import { calculateCompoundInterest } from "@/lib/calculators";
 
 const formSchema = z.object({
   principal: z.string().transform(Number).pipe(
-    z.number().positive("Loan amount must be positive")
+    z.number().positive("Principal amount must be positive")
   ),
   rate: z.string().transform(Number).pipe(
     z.number().positive("Interest rate must be positive")
   ),
-  tenure: z.string().transform(Number).pipe(
-    z.number().positive("Tenure must be positive")
+  time: z.string().transform(Number).pipe(
+    z.number().positive("Time period must be positive")
   ),
+  frequency: z.enum(["yearly", "half-yearly", "quarterly", "monthly"]),
 });
 
-type FormValues = {
-  principal: string;
-  rate: string;
-  tenure: string;
-};
+type FormValues = z.infer<typeof formSchema>;
 
-export default function CarLoanCalculator() {
-  const [results, setResults] = useState<ReturnType<typeof calculateEMI>>();
+export default function CompoundInterestCalculator() {
+  const [results, setResults] = useState<ReturnType<typeof calculateCompoundInterest>>();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "800000",
-      rate: "9.5",
-      tenure: "7",
+      principal: "10000",
+      rate: "10",
+      time: "5",
+      frequency: "yearly",
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateEMI(
+    const result = calculateCompoundInterest(
       Number(data.principal),
       Number(data.rate),
-      Number(data.tenure)
+      Number(data.time),
+      data.frequency
     );
     setResults(result);
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Car Loan EMI Calculator</h1>
+      <h1 className="text-3xl font-bold mb-6">Compound Interest Calculator</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
@@ -69,7 +75,7 @@ export default function CarLoanCalculator() {
                   name="principal"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Car Loan Amount (₹)</FormLabel>
+                      <FormLabel>Principal Amount (₹)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -94,10 +100,10 @@ export default function CarLoanCalculator() {
 
                 <FormField
                   control={form.control}
-                  name="tenure"
+                  name="time"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loan Tenure (Years)</FormLabel>
+                      <FormLabel>Time Period (Years)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -106,8 +112,35 @@ export default function CarLoanCalculator() {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="frequency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Compounding Frequency</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select frequency" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yearly">Yearly</SelectItem>
+                          <SelectItem value="half-yearly">Half-Yearly</SelectItem>
+                          <SelectItem value="quarterly">Quarterly</SelectItem>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button type="submit" className="w-full">
-                  Calculate Car Loan EMI
+                  Calculate Interest
                 </Button>
               </form>
             </Form>
@@ -119,14 +152,16 @@ export default function CarLoanCalculator() {
             <Card>
               <CardContent className="p-6 grid gap-4">
                 <div>
-                  <h3 className="text-sm text-muted-foreground">Monthly EMI</h3>
+                  <h3 className="text-sm text-muted-foreground">
+                    Principal Amount
+                  </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.emi).toLocaleString()}
+                    ₹{Math.round(results.principal).toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Interest Payable
+                    Total Interest
                   </h3>
                   <p className="text-2xl font-semibold">
                     ₹{Math.round(results.totalInterest).toLocaleString()}
@@ -134,18 +169,18 @@ export default function CarLoanCalculator() {
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Payment
+                    Maturity Value
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalPayment).toLocaleString()}
+                    ₹{Math.round(results.maturityValue).toLocaleString()}
                   </p>
                 </div>
               </CardContent>
             </Card>
 
             <ResultsChart
-              data={results.monthlyData}
-              title="Outstanding Loan Balance Over Time"
+              data={results.yearlyData}
+              title="Investment Growth Over Time"
             />
           </div>
         )}

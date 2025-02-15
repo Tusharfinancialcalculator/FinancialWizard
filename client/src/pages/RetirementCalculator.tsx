@@ -44,7 +44,15 @@ const formSchema = z.object({
   ),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = {
+  currentAge: string;
+  retirementAge: string;
+  monthlyExpenses: string;
+  currentSavings: string;
+  monthlyInvestment: string;
+  expectedReturn: string;
+  inflationRate: string;
+};
 
 export default function RetirementCalculator() {
   const [results, setResults] = useState<ReturnType<typeof calculateRetirement>>();

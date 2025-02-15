@@ -14,50 +14,34 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ResultsChart from "@/components/calculators/ResultsChart";
-import { calculateEMI } from "@/lib/calculators";
+import { calculateNSC } from "@/lib/calculators";
 
 const formSchema = z.object({
   principal: z.string().transform(Number).pipe(
-    z.number().positive("Loan amount must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  tenure: z.string().transform(Number).pipe(
-    z.number().positive("Tenure must be positive")
+    z.number().positive("Investment amount must be positive")
   ),
 });
 
-type FormValues = {
-  principal: string;
-  rate: string;
-  tenure: string;
-};
+type FormValues = z.infer<typeof formSchema>;
 
-export default function CarLoanCalculator() {
-  const [results, setResults] = useState<ReturnType<typeof calculateEMI>>();
+export default function NSCCalculator() {
+  const [results, setResults] = useState<ReturnType<typeof calculateNSC>>();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "800000",
-      rate: "9.5",
-      tenure: "7",
+      principal: "10000",
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateEMI(
-      Number(data.principal),
-      Number(data.rate),
-      Number(data.tenure)
-    );
+    const result = calculateNSC(Number(data.principal));
     setResults(result);
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Car Loan EMI Calculator</h1>
+      <h1 className="text-3xl font-bold mb-6">NSC Calculator</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
@@ -69,35 +53,7 @@ export default function CarLoanCalculator() {
                   name="principal"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Car Loan Amount (₹)</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="rate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Interest Rate (% per annum)</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" step="0.1" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="tenure"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Loan Tenure (Years)</FormLabel>
+                      <FormLabel>Investment Amount (₹)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -107,7 +63,7 @@ export default function CarLoanCalculator() {
                 />
 
                 <Button type="submit" className="w-full">
-                  Calculate Car Loan EMI
+                  Calculate Returns
                 </Button>
               </form>
             </Form>
@@ -119,33 +75,35 @@ export default function CarLoanCalculator() {
             <Card>
               <CardContent className="p-6 grid gap-4">
                 <div>
-                  <h3 className="text-sm text-muted-foreground">Monthly EMI</h3>
+                  <h3 className="text-sm text-muted-foreground">
+                    Investment Amount
+                  </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.emi).toLocaleString()}
+                    ₹{Math.round(results.investment).toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Interest Payable
+                    Interest Earned
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalInterest).toLocaleString()}
+                    ₹{Math.round(results.interestEarned).toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Payment
+                    Maturity Value
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalPayment).toLocaleString()}
+                    ₹{Math.round(results.maturityValue).toLocaleString()}
                   </p>
                 </div>
               </CardContent>
             </Card>
 
             <ResultsChart
-              data={results.monthlyData}
-              title="Outstanding Loan Balance Over Time"
+              data={results.yearlyData}
+              title="NSC Investment Growth"
             />
           </div>
         )}

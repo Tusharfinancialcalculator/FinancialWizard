@@ -6,19 +6,25 @@ const navigation = [
   { name: "Home", href: "/" },
   { name: "Investment", items: [
     { name: "SIP Calculator", href: "/sip-calculator" },
+    { name: "Step-Up SIP Calculator", href: "/step-up-sip-calculator" },
     { name: "Lumpsum Calculator", href: "/lumpsum-calculator" },
     { name: "PPF Calculator", href: "/ppf-calculator" },
+    { name: "NSC Calculator", href: "/nsc-calculator" },
     { name: "FD Calculator", href: "/fd-calculator" },
     { name: "RD Calculator", href: "/rd-calculator" },
     { name: "NPS Calculator", href: "/nps-calculator" },
+  ]},
+  { name: "Interest", items: [
+    { name: "Simple Interest", href: "/simple-interest-calculator" },
+    { name: "Compound Interest", href: "/compound-interest-calculator" },
   ]},
   { name: "Loans", items: [
     { name: "Home Loan EMI", href: "/home-loan-calculator" },
     { name: "Car Loan EMI", href: "/car-loan-calculator" },
   ]},
   { name: "Tax & Salary", items: [
+    { name: "Income Tax", href: "/income-tax-calculator" },
     { name: "HRA Calculator", href: "/hra-calculator" },
-    { name: "Simple Interest", href: "/simple-interest-calculator" },
   ]},
   { name: "Planning", items: [
     { name: "Retirement", href: "/retirement-calculator" },

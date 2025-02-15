@@ -28,7 +28,11 @@ const formSchema = z.object({
   ),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = {
+  principal: string;
+  rate: string;
+  tenure: string;
+};
 
 export default function HomeLoanCalculator() {
   const [results, setResults] = useState<ReturnType<typeof calculateEMI>>();

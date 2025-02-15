@@ -14,50 +14,51 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ResultsChart from "@/components/calculators/ResultsChart";
-import { calculateEMI } from "@/lib/calculators";
+import { calculateStepUpSIP } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Loan amount must be positive")
+  monthlyInvestment: z.string().transform(Number).pipe(
+    z.number().positive("Monthly investment must be positive")
   ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
+  annualIncrease: z.string().transform(Number).pipe(
+    z.number().min(0, "Annual increase cannot be negative")
   ),
-  tenure: z.string().transform(Number).pipe(
-    z.number().positive("Tenure must be positive")
+  years: z.string().transform(Number).pipe(
+    z.number().positive("Years must be positive")
+  ),
+  expectedReturn: z.string().transform(Number).pipe(
+    z.number().positive("Expected return rate must be positive")
   ),
 });
 
-type FormValues = {
-  principal: string;
-  rate: string;
-  tenure: string;
-};
+type FormValues = z.infer<typeof formSchema>;
 
-export default function CarLoanCalculator() {
-  const [results, setResults] = useState<ReturnType<typeof calculateEMI>>();
+export default function StepUpSIPCalculator() {
+  const [results, setResults] = useState<ReturnType<typeof calculateStepUpSIP>>();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "800000",
-      rate: "9.5",
-      tenure: "7",
+      monthlyInvestment: "10000",
+      annualIncrease: "10",
+      years: "10",
+      expectedReturn: "12",
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateEMI(
-      Number(data.principal),
-      Number(data.rate),
-      Number(data.tenure)
+    const result = calculateStepUpSIP(
+      Number(data.monthlyInvestment),
+      Number(data.annualIncrease),
+      Number(data.years),
+      Number(data.expectedReturn)
     );
     setResults(result);
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Car Loan EMI Calculator</h1>
+      <h1 className="text-3xl font-bold mb-6">Step-Up SIP Calculator</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
@@ -66,10 +67,10 @@ export default function CarLoanCalculator() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="principal"
+                  name="monthlyInvestment"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Car Loan Amount (₹)</FormLabel>
+                      <FormLabel>Initial Monthly Investment (₹)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -80,10 +81,10 @@ export default function CarLoanCalculator() {
 
                 <FormField
                   control={form.control}
-                  name="rate"
+                  name="annualIncrease"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Interest Rate (% per annum)</FormLabel>
+                      <FormLabel>Annual Step-Up (%)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" step="0.1" />
                       </FormControl>
@@ -94,10 +95,10 @@ export default function CarLoanCalculator() {
 
                 <FormField
                   control={form.control}
-                  name="tenure"
+                  name="years"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loan Tenure (Years)</FormLabel>
+                      <FormLabel>Investment Period (Years)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -106,8 +107,22 @@ export default function CarLoanCalculator() {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="expectedReturn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expected Return Rate (%)</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="number" step="0.1" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button type="submit" className="w-full">
-                  Calculate Car Loan EMI
+                  Calculate Returns
                 </Button>
               </form>
             </Form>
@@ -119,33 +134,35 @@ export default function CarLoanCalculator() {
             <Card>
               <CardContent className="p-6 grid gap-4">
                 <div>
-                  <h3 className="text-sm text-muted-foreground">Monthly EMI</h3>
+                  <h3 className="text-sm text-muted-foreground">
+                    Total Investment
+                  </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.emi).toLocaleString()}
+                    ₹{Math.round(results.totalInvestment).toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Interest Payable
+                    Total Returns
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalInterest).toLocaleString()}
+                    ₹{Math.round(results.totalReturns).toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Payment
+                    Final Monthly Investment
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalPayment).toLocaleString()}
+                    ₹{Math.round(results.finalMonthlyInvestment).toLocaleString()}
                   </p>
                 </div>
               </CardContent>
             </Card>
 
             <ResultsChart
-              data={results.monthlyData}
-              title="Outstanding Loan Balance Over Time"
+              data={results.yearlyData}
+              title="Step-Up SIP Growth Over Time"
             />
           </div>
         )}
