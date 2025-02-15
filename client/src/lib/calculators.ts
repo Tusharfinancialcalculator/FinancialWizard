@@ -2,7 +2,12 @@ export function calculateSIP(
   monthlyInvestment: number,
   years: number,
   expectedReturn: number
-) {
+): {
+  totalInvestment: number;
+  totalReturns: number;
+  maturityValue: number;
+  monthlyData: Array<{ label: string; value: number }>;
+} {
   const monthlyRate = expectedReturn / 12 / 100;
   const months = years * 12;
 
@@ -671,8 +676,9 @@ export function calculateAPY(
 }
 
 export function calculateGST(
-  baseAmount: number,
-  gstRate: number
+  amount: number,
+  gstRate: number,
+  isInclusive: boolean = false
 ): {
   baseAmount: number;
   cgst: number;
@@ -688,13 +694,25 @@ export function calculateGST(
   const cgstRate = gstRate / 2;
   const sgstRate = gstRate / 2;
 
+  let baseAmount: number;
+  let totalAmount: number;
+
+  if (isInclusive) {
+    // If amount is inclusive of GST, calculate base amount
+    baseAmount = (amount * 100) / (100 + gstRate);
+    totalAmount = amount;
+  } else {
+    // If amount is exclusive of GST, amount is the base amount
+    baseAmount = amount;
+    totalAmount = amount * (1 + gstRate / 100);
+  }
+
   const cgst = (baseAmount * cgstRate) / 100;
   const sgst = (baseAmount * sgstRate) / 100;
   const totalGST = cgst + sgst;
-  const totalAmount = baseAmount + totalGST;
 
   return {
-    baseAmount,
+    baseAmount: Math.round(baseAmount),
     cgst: Math.round(cgst),
     sgst: Math.round(sgst),
     totalGST: Math.round(totalGST),

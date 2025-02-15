@@ -20,15 +20,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { calculateGST } from "@/lib/calculators";
 
 const formSchema = z.object({
-  baseAmount: z.coerce
+  amount: z.coerce
     .number()
     .positive("Amount must be positive"),
   gstRate: z.coerce
     .number()
     .positive("GST rate must be positive"),
+  isInclusive: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -46,13 +48,14 @@ export default function GSTCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      baseAmount: 1000,
+      amount: 1000,
       gstRate: 18,
+      isInclusive: false,
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateGST(data.baseAmount, data.gstRate);
+    const result = calculateGST(data.amount, data.gstRate, data.isInclusive);
     setResults(result);
   }
 
@@ -61,6 +64,7 @@ export default function GSTCalculator() {
       <h1 className="text-3xl font-bold mb-6">GST Calculator</h1>
       <p className="text-muted-foreground mb-6">
         Calculate GST components (CGST & SGST) and total amount for your transactions.
+        Switch between exclusive (GST added to amount) and inclusive (GST included in amount) calculations.
       </p>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -70,10 +74,10 @@ export default function GSTCalculator() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="baseAmount"
+                  name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Base Amount (₹)</FormLabel>
+                      <FormLabel>Amount (₹)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -106,6 +110,27 @@ export default function GSTCalculator() {
                         </SelectContent>
                       </Select>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="isInclusive"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Inclusive of GST</FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Toggle if the amount includes GST
+                        </p>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -150,6 +175,13 @@ export default function GSTCalculator() {
                   <div>
                     <span className="text-sm text-muted-foreground">SGST ({results.breakdown.sgstRate}%):</span>
                     <p className="font-medium">₹{results.sgst.toLocaleString()}</p>
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-4">
+                    * GST is equally divided between CGST (Central) and SGST (State)
+                    <br />
+                    * {form.getValues("isInclusive") 
+                      ? "Amount entered includes GST (inclusive calculation)"
+                      : "GST will be added to the amount (exclusive calculation)"}
                   </div>
                 </div>
               </CardContent>
