@@ -2,12 +2,7 @@ export function calculateSIP(
   monthlyInvestment: number,
   years: number,
   expectedReturn: number
-): {
-  totalInvestment: number;
-  totalReturns: number;
-  maturityValue: number;
-  monthlyData: Array<{ label: string; value: number }>;
-} {
+) {
   const monthlyRate = expectedReturn / 12 / 100;
   const months = years * 12;
 
@@ -672,5 +667,41 @@ export function calculateAPY(
     corpusAtMaturity,
     monthlyPension: nearestSlab,
     yearlyData
+  };
+}
+
+export function calculateGST(
+  baseAmount: number,
+  gstRate: number
+): {
+  baseAmount: number;
+  cgst: number;
+  sgst: number;
+  totalGST: number;
+  totalAmount: number;
+  breakdown: {
+    cgstRate: number;
+    sgstRate: number;
+  };
+} {
+  // GST is split equally between CGST and SGST
+  const cgstRate = gstRate / 2;
+  const sgstRate = gstRate / 2;
+
+  const cgst = (baseAmount * cgstRate) / 100;
+  const sgst = (baseAmount * sgstRate) / 100;
+  const totalGST = cgst + sgst;
+  const totalAmount = baseAmount + totalGST;
+
+  return {
+    baseAmount,
+    cgst: Math.round(cgst),
+    sgst: Math.round(sgst),
+    totalGST: Math.round(totalGST),
+    totalAmount: Math.round(totalAmount),
+    breakdown: {
+      cgstRate,
+      sgstRate,
+    },
   };
 }
