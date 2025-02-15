@@ -25,6 +25,11 @@ import {
   TrendingDown,
   Scale,
   FileText,
+  ChevronsUp,
+  BarChart4,
+  Inbox,
+  Users,
+  TrendingUp as ChartUp,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -172,6 +177,36 @@ const features = [
     description: "Learn about credit card usage and calculations",
     icon: CreditCard,
     href: "/credit-card-calculator",
+  },
+  {
+    title: "Salary Calculator",
+    description: "Calculate take-home salary after all deductions and allowances",
+    icon: Users,
+    href: "/salary-calculator",
+  },
+  {
+    title: "Inflation Calculator",
+    description: "Analyze the impact of inflation on purchasing power over time",
+    icon: ChartUp,
+    href: "/inflation-calculator",
+  },
+  {
+    title: "Post Office MIS",
+    description: "Calculate returns from Post Office Monthly Income Scheme",
+    icon: Inbox,
+    href: "/post-office-mis-calculator",
+  },
+  {
+    title: "SCSS Calculator",
+    description: "Calculate returns from Senior Citizen Savings Scheme",
+    icon: ChevronsUp,
+    href: "/scss-calculator",
+  },
+  {
+    title: "Stock Average Price",
+    description: "Calculate average purchase price of stocks across multiple buys",
+    icon: BarChart4,
+    href: "/stock-average-price-calculator",
   },
 ];
 
