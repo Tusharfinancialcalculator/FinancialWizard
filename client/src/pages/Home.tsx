@@ -151,7 +151,7 @@ const features = [
   },
   {
     title: "Retirement Calculator",
-    description: "Plan your retirement corpus and investments",
+    description: "Plan your retirement with our comprehensive calculator. Input your current age, retirement age, monthly expenses, expected returns, and inflation rate to determine the corpus needed and monthly investments required. Accounts for inflation and helps visualize your retirement savings growth.",
     icon: Clock,
     href: "/retirement-calculator",
   },

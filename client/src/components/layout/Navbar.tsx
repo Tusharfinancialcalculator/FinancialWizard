@@ -39,7 +39,7 @@ const navigation = [
     { name: "Salary Calculator", href: "/salary-calculator" },
   ]},
   { name: "Planning", items: [
-    { name: "Retirement", href: "/retirement-calculator" },
+    { name: "Retirement", href: "/retirement-calculator", description: "Calculate required retirement corpus and monthly savings needed, considering inflation and returns" },
     { name: "Credit Card", href: "/credit-card-calculator" },
     { name: "Inflation", href: "/inflation-calculator" },
   ]},
