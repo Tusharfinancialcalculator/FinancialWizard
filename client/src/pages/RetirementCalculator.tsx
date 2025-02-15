@@ -180,12 +180,12 @@ export default function RetirementCalculator() {
                             <SelectValue placeholder="Select FIRE strategy" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="w-[400px]">
                           {Object.entries(fireTypeDescriptions).map(([key, { title, description }]) => (
-                            <SelectItem key={key} value={key}>
-                              <div className="flex flex-col">
+                            <SelectItem key={key} value={key} className="py-3">
+                              <div className="flex flex-col gap-1">
                                 <span className="font-medium">{title}</span>
-                                <span className="text-xs text-muted-foreground">{description}</span>
+                                <span className="text-xs text-muted-foreground whitespace-normal">{description}</span>
                               </div>
                             </SelectItem>
                           ))}
