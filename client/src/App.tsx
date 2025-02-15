@@ -21,6 +21,8 @@ import CompoundInterestCalculator from "@/pages/CompoundInterestCalculator";
 import NSCCalculator from "@/pages/NSCCalculator";
 import IncomeTaxCalculator from "@/pages/IncomeTaxCalculator";
 import NPSCalculator from "@/pages/NPSCalculator";
+import CAGRCalculator from "@/pages/CAGRCalculator";
+import GratuityCalculator from "@/pages/GratuityCalculator";
 
 function Router() {
   return (
@@ -45,6 +47,8 @@ function Router() {
           <Route path="/nsc-calculator" component={NSCCalculator} />
           <Route path="/income-tax-calculator" component={IncomeTaxCalculator} />
           <Route path="/nps-calculator" component={NPSCalculator} />
+          <Route path="/cagr-calculator" component={CAGRCalculator} />
+          <Route path="/gratuity-calculator" component={GratuityCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>

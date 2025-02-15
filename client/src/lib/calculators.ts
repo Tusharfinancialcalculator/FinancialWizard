@@ -2,12 +2,7 @@ export function calculateSIP(
   monthlyInvestment: number,
   years: number,
   expectedReturn: number
-): {
-  totalInvestment: number;
-  totalReturns: number;
-  maturityValue: number;
-  monthlyData: Array<{ label: string; value: number }>;
-} {
+) {
   const monthlyRate = expectedReturn / 12 / 100;
   const months = years * 12;
 
@@ -541,5 +536,72 @@ export function calculateIncomeTax(
     effectiveTaxRate,
     slabwiseBreakup,
     takeHome,
+  };
+}
+
+export function calculateCAGR(
+  initialValue: number,
+  finalValue: number,
+  years: number
+): {
+  cagrPercentage: number;
+  yearlyData: Array<{ label: string; value: number }>;
+} {
+  const cagrPercentage = (Math.pow(finalValue / initialValue, 1 / years) - 1) * 100;
+
+  // Generate yearly data points for the graph
+  const yearlyData = [];
+  for (let i = 0; i <= years; i++) {
+    const value = initialValue * Math.pow(1 + cagrPercentage / 100, i);
+    yearlyData.push({
+      label: `Year ${i}`,
+      value: Math.round(value),
+    });
+  }
+
+  return {
+    cagrPercentage: Number(cagrPercentage.toFixed(2)),
+    yearlyData,
+  };
+}
+
+export function calculateGratuity(
+  basicSalary: number,
+  yearsOfService: number
+): {
+  gratuityAmount: number;
+  isEligible: boolean;
+  calculationBreakdown: {
+    dailyWage: number;
+    fifteenDaysSalary: number;
+    yearsConsidered: number;
+  };
+} {
+  // Check eligibility (minimum 5 years of service)
+  const isEligible = yearsOfService >= 5;
+
+  // Calculate daily wage (basic salary / 26)
+  const dailyWage = basicSalary / 26;
+
+  // 15 days salary
+  const fifteenDaysSalary = dailyWage * 15;
+
+  // Calculate gratuity amount
+  let gratuityAmount = 0;
+  if (isEligible) {
+    gratuityAmount = fifteenDaysSalary * yearsOfService;
+
+    // Cap maximum gratuity at ₹20 lakhs as per current rules
+    gratuityAmount = Math.min(gratuityAmount, 2000000);
+  }
+
+  return {
+    gratuityAmount: Math.round(gratuityAmount),
+    isEligible,
+    calculationBreakdown: {
+      dailyWage: Math.round(dailyWage),
+      fifteenDaysSalary: Math.round(fifteenDaysSalary),
+      yearsConsidered: yearsOfService,
+    },
   };
 }

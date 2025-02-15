@@ -8,6 +8,7 @@ const navigation = [
     { name: "SIP Calculator", href: "/sip-calculator" },
     { name: "Step-Up SIP Calculator", href: "/step-up-sip-calculator" },
     { name: "Lumpsum Calculator", href: "/lumpsum-calculator" },
+    { name: "CAGR Calculator", href: "/cagr-calculator" },
     { name: "PPF Calculator", href: "/ppf-calculator" },
     { name: "NSC Calculator", href: "/nsc-calculator" },
     { name: "FD Calculator", href: "/fd-calculator" },
@@ -25,6 +26,7 @@ const navigation = [
   { name: "Tax & Salary", items: [
     { name: "Income Tax", href: "/income-tax-calculator" },
     { name: "HRA Calculator", href: "/hra-calculator" },
+    { name: "Gratuity Calculator", href: "/gratuity-calculator" },
   ]},
   { name: "Planning", items: [
     { name: "Retirement", href: "/retirement-calculator" },
