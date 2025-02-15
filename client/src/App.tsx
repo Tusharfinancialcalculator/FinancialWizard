@@ -25,6 +25,7 @@ import CAGRCalculator from "@/pages/CAGRCalculator";
 import GratuityCalculator from "@/pages/GratuityCalculator";
 import APYCalculator from "@/pages/APYCalculator";
 import GSTCalculator from "@/pages/GSTCalculator";
+import FlatVsReducingCalculator from "@/pages/FlatVsReducingCalculator";
 
 function Router() {
   return (
@@ -53,6 +54,7 @@ function Router() {
           <Route path="/gratuity-calculator" component={GratuityCalculator} />
           <Route path="/apy-calculator" component={APYCalculator} />
           <Route path="/gst-calculator" component={GSTCalculator} />
+          <Route path="/flat-vs-reducing-calculator" component={FlatVsReducingCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -60,7 +62,7 @@ function Router() {
   );
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router />
@@ -68,5 +70,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;

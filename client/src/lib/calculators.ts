@@ -723,3 +723,92 @@ export function calculateGST(
     },
   };
 }
+
+export function calculateFlatVsReducingRate(
+  principal: number,
+  tenure: number,
+  flatRate: number,
+  reducingRate: number
+): {
+  flatInterest: {
+    emi: number;
+    totalInterest: number;
+    totalPayment: number;
+    monthlyData: Array<{ label: string; value: number }>;
+  };
+  reducingInterest: {
+    emi: number;
+    totalInterest: number;
+    totalPayment: number;
+    monthlyData: Array<{ label: string; value: number }>;
+  };
+  comparison: {
+    interestSaved: number;
+    effectiveRateDiff: number;
+  };
+} {
+  // Calculate Flat Interest
+  const flatMonthlyRate = flatRate / 12 / 100;
+  const months = tenure * 12;
+
+  const flatEMI = (principal + (principal * flatRate * tenure / 100)) / months;
+  const flatTotalPayment = flatEMI * months;
+  const flatTotalInterest = flatTotalPayment - principal;
+
+  let flatMonthlyData = [];
+  let flatRemainingBalance = principal;
+  const flatMonthlyPrincipal = principal / months;
+
+  for (let i = 0; i <= months; i++) {
+    flatMonthlyData.push({
+      label: `Month ${i}`,
+      value: Math.round(flatRemainingBalance),
+    });
+    flatRemainingBalance -= flatMonthlyPrincipal;
+  }
+
+  // Calculate Reducing Interest (using standard EMI formula)
+  const reducingMonthlyRate = reducingRate / 12 / 100;
+
+  const reducingEMI = (principal * reducingMonthlyRate * Math.pow(1 + reducingMonthlyRate, months)) /
+    (Math.pow(1 + reducingMonthlyRate, months) - 1);
+
+  const reducingTotalPayment = reducingEMI * months;
+  const reducingTotalInterest = reducingTotalPayment - principal;
+
+  let reducingMonthlyData = [];
+  let reducingRemainingBalance = principal;
+
+  for (let i = 0; i <= months; i++) {
+    reducingMonthlyData.push({
+      label: `Month ${i}`,
+      value: Math.round(reducingRemainingBalance),
+    });
+    const interestPayment = reducingRemainingBalance * reducingMonthlyRate;
+    const principalPayment = reducingEMI - interestPayment;
+    reducingRemainingBalance -= principalPayment;
+  }
+
+  // Calculate comparison metrics
+  const interestSaved = flatTotalInterest - reducingTotalInterest;
+  const effectiveRateDiff = (flatTotalInterest - reducingTotalInterest) / (principal * tenure) * 100;
+
+  return {
+    flatInterest: {
+      emi: Math.round(flatEMI),
+      totalInterest: Math.round(flatTotalInterest),
+      totalPayment: Math.round(flatTotalPayment),
+      monthlyData: flatMonthlyData,
+    },
+    reducingInterest: {
+      emi: Math.round(reducingEMI),
+      totalInterest: Math.round(reducingTotalInterest),
+      totalPayment: Math.round(reducingTotalPayment),
+      monthlyData: reducingMonthlyData,
+    },
+    comparison: {
+      interestSaved: Math.round(interestSaved),
+      effectiveRateDiff: Number(effectiveRateDiff.toFixed(2)),
+    },
+  };
+}
