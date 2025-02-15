@@ -36,9 +36,9 @@ export default function FDCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: "100000",
-      rate: "7",
-      years: "5",
+      principal: 100000,
+      rate: 7,
+      years: 5,
     },
   });
 

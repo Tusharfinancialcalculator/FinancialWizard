@@ -30,15 +30,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function EmiCalculator() {
+export default function HomeLoanCalculator() {
   const [results, setResults] = useState<ReturnType<typeof calculateEMI>>();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: 1000000,
-      rate: 10,
-      tenure: 5,
+      principal: 5000000,
+      rate: 8.5,
+      tenure: 20,
     },
   });
 
@@ -49,7 +49,7 @@ export default function EmiCalculator() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">EMI Calculator</h1>
+      <h1 className="text-3xl font-bold mb-6">Home Loan EMI Calculator</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
@@ -61,7 +61,7 @@ export default function EmiCalculator() {
                   name="principal"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loan Amount (₹)</FormLabel>
+                      <FormLabel>Home Loan Amount (₹)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -99,7 +99,7 @@ export default function EmiCalculator() {
                 />
 
                 <Button type="submit" className="w-full">
-                  Calculate EMI
+                  Calculate Home Loan EMI
                 </Button>
               </form>
             </Form>
@@ -118,7 +118,7 @@ export default function EmiCalculator() {
                 </div>
                 <div>
                   <h3 className="text-sm text-muted-foreground">
-                    Total Interest
+                    Total Interest Payable
                   </h3>
                   <p className="text-2xl font-semibold">
                     ₹{Math.round(results.totalInterest).toLocaleString()}

@@ -282,3 +282,101 @@ export function calculateSimpleInterest(
     yearlyData,
   };
 }
+
+export function calculateHRA(
+  basicSalary: number,
+  rentPaid: number,
+  cityType: 'metro' | 'non-metro'
+): {
+  hraReceived: number;
+  hraExemption: number;
+  taxableHRA: number;
+  monthlyData: Array<{ label: string; value: number }>;
+} {
+  const hraReceived = basicSalary * 0.4; 
+  const cityMultiplier = cityType === 'metro' ? 0.5 : 0.4;
+  const cityBasedExemption = basicSalary * cityMultiplier;
+  const rentBasedExemption = rentPaid - (basicSalary * 0.1);
+
+  const hraExemption = Math.min(
+    hraReceived,
+    cityBasedExemption,
+    rentBasedExemption > 0 ? rentBasedExemption : 0
+  );
+
+  const taxableHRA = hraReceived - hraExemption;
+
+  const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+    label: `Month ${i + 1}`,
+    value: hraReceived,
+  }));
+
+  return {
+    hraReceived,
+    hraExemption,
+    taxableHRA,
+    monthlyData,
+  };
+}
+
+export function calculateRetirement(
+  currentAge: number,
+  retirementAge: number,
+  monthlyExpenses: number,
+  currentSavings: number,
+  monthlyInvestment: number,
+  expectedReturn: number,
+  inflationRate: number = 6
+): {
+  requiredCorpus: number;
+  currentCorpus: number;
+  monthlyInvestmentNeeded: number;
+  yearlyData: Array<{ label: string; value: number }>;
+} {
+  const yearsToRetirement = retirementAge - currentAge;
+  const yearsPostRetirement = 85 - retirementAge; 
+
+  const futureMonthlyExpenses = monthlyExpenses * 
+    Math.pow(1 + inflationRate / 100, yearsToRetirement);
+
+  const requiredCorpus = (futureMonthlyExpenses * 12) / 0.04;
+
+  const currentCorpus = currentSavings * 
+    Math.pow(1 + expectedReturn / 100, yearsToRetirement);
+
+  const monthlyRate = expectedReturn / 12 / 100;
+  const months = yearsToRetirement * 12;
+
+  const futureValueOfCurrentInvestments = monthlyInvestment * 
+    ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * 
+    (1 + monthlyRate);
+
+  const totalExpectedCorpus = currentCorpus + futureValueOfCurrentInvestments;
+
+  const shortfall = Math.max(0, requiredCorpus - totalExpectedCorpus);
+  const monthlyInvestmentNeeded = shortfall > 0 
+    ? (shortfall * monthlyRate) / 
+      (Math.pow(1 + monthlyRate, months) - 1) / 
+      (1 + monthlyRate)
+    : 0;
+
+  const yearlyData = [];
+  for (let year = 0; year <= yearsToRetirement; year++) {
+    const savingsGrowth = currentSavings * 
+      Math.pow(1 + expectedReturn / 100, year);
+    const investmentGrowth = monthlyInvestment * 12 * 
+      ((Math.pow(1 + expectedReturn / 100, year) - 1) / 
+      (expectedReturn / 100));
+    yearlyData.push({
+      label: `Age ${currentAge + year}`,
+      value: Math.round(savingsGrowth + investmentGrowth),
+    });
+  }
+
+  return {
+    requiredCorpus,
+    currentCorpus,
+    monthlyInvestmentNeeded,
+    yearlyData,
+  };
+}

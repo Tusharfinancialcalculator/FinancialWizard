@@ -13,43 +13,52 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ResultsChart from "@/components/calculators/ResultsChart";
-import { calculateEMI } from "@/lib/calculators";
+import { calculateHRA } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Loan amount must be positive")
+  basicSalary: z.string().transform(Number).pipe(
+    z.number().positive("Basic salary must be positive")
   ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
+  rentPaid: z.string().transform(Number).pipe(
+    z.number().positive("Rent paid must be positive")
   ),
-  tenure: z.string().transform(Number).pipe(
-    z.number().positive("Tenure must be positive")
-  ),
+  cityType: z.enum(["metro", "non-metro"]),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function EmiCalculator() {
-  const [results, setResults] = useState<ReturnType<typeof calculateEMI>>();
+export default function HRACalculator() {
+  const [results, setResults] = useState<ReturnType<typeof calculateHRA>>();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: 1000000,
-      rate: 10,
-      tenure: 5,
+      basicSalary: 50000,
+      rentPaid: 20000,
+      cityType: "metro",
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateEMI(data.principal, data.rate, data.tenure);
+    const result = calculateHRA(
+      Number(data.basicSalary),
+      Number(data.rentPaid),
+      data.cityType
+    );
     setResults(result);
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">EMI Calculator</h1>
+      <h1 className="text-3xl font-bold mb-6">HRA Calculator</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
@@ -58,10 +67,10 @@ export default function EmiCalculator() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="principal"
+                  name="basicSalary"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loan Amount (₹)</FormLabel>
+                      <FormLabel>Basic Salary (₹/month)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
@@ -72,12 +81,12 @@ export default function EmiCalculator() {
 
                 <FormField
                   control={form.control}
-                  name="rate"
+                  name="rentPaid"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Interest Rate (% per annum)</FormLabel>
+                      <FormLabel>Rent Paid (₹/month)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" step="0.1" />
+                        <Input {...field} type="number" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -86,20 +95,31 @@ export default function EmiCalculator() {
 
                 <FormField
                   control={form.control}
-                  name="tenure"
+                  name="cityType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loan Tenure (Years)</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" />
-                      </FormControl>
+                      <FormLabel>City Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select city type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="metro">Metro City</SelectItem>
+                          <SelectItem value="non-metro">Non-Metro City</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
                 <Button type="submit" className="w-full">
-                  Calculate EMI
+                  Calculate HRA
                 </Button>
               </form>
             </Form>
@@ -111,25 +131,21 @@ export default function EmiCalculator() {
             <Card>
               <CardContent className="p-6 grid gap-4">
                 <div>
-                  <h3 className="text-sm text-muted-foreground">Monthly EMI</h3>
+                  <h3 className="text-sm text-muted-foreground">HRA Received</h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.emi).toLocaleString()}
+                    ₹{Math.round(results.hraReceived).toLocaleString()}/month
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-sm text-muted-foreground">
-                    Total Interest
-                  </h3>
+                  <h3 className="text-sm text-muted-foreground">HRA Exemption</h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalInterest).toLocaleString()}
+                    ₹{Math.round(results.hraExemption).toLocaleString()}/month
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-sm text-muted-foreground">
-                    Total Payment
-                  </h3>
+                  <h3 className="text-sm text-muted-foreground">Taxable HRA</h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalPayment).toLocaleString()}
+                    ₹{Math.round(results.taxableHRA).toLocaleString()}/month
                   </p>
                 </div>
               </CardContent>
@@ -137,7 +153,7 @@ export default function EmiCalculator() {
 
             <ResultsChart
               data={results.monthlyData}
-              title="Outstanding Loan Balance Over Time"
+              title="Monthly HRA Breakdown"
             />
           </div>
         )}

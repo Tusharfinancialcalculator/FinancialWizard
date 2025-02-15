@@ -8,7 +8,11 @@ import {
   Building2,
   Coins,
   Percent,
-  BadgePercent, // Added for NPS icon
+  BadgePercent,
+  HomeIcon,
+  Car,
+  Building,
+  Clock,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -50,16 +54,34 @@ const features = [
     href: "/simple-interest-calculator",
   },
   {
-    title: "NPS Calculator", // Added new calculator
+    title: "NPS Calculator",
     description: "Calculate returns for National Pension Scheme",
     icon: BadgePercent,
     href: "/nps-calculator",
   },
   {
-    title: "EMI Calculator",
-    description: "Calculate loan EMIs and total interest",
-    icon: Wallet,
-    href: "/emi-calculator",
+    title: "HRA Calculator",
+    description: "Calculate House Rent Allowance exemptions",
+    icon: Building,
+    href: "/hra-calculator",
+  },
+  {
+    title: "Retirement Calculator",
+    description: "Plan your retirement corpus and investments",
+    icon: Clock,
+    href: "/retirement-calculator",
+  },
+  {
+    title: "Home Loan EMI",
+    description: "Calculate home loan EMIs and total interest",
+    icon: HomeIcon,
+    href: "/home-loan-calculator",
+  },
+  {
+    title: "Car Loan EMI",
+    description: "Calculate car loan EMIs and total interest",
+    icon: Car,
+    href: "/car-loan-calculator",
   },
   {
     title: "Credit Card Guide",
@@ -69,7 +91,7 @@ const features = [
   },
 ];
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
@@ -81,7 +103,7 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
           <Link key={feature.title} href={feature.href}>
             <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">

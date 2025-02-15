@@ -36,9 +36,9 @@ export default function RDCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      monthlyInvestment: "5000",
-      rate: "7",
-      years: "5",
+      monthlyInvestment: 5000,
+      rate: 7,
+      years: 5,
     },
   });
 
@@ -54,7 +54,7 @@ export default function RDCalculator() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Recurring Deposit Calculator</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">
