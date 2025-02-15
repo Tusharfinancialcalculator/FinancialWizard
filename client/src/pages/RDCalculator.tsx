@@ -17,15 +17,9 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateRD } from "@/lib/calculators";
 
 const formSchema = z.object({
-  monthlyInvestment: z.string().transform(Number).pipe(
-    z.number().positive("Monthly investment must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().positive("Years must be positive")
-  ),
+  monthlyInvestment: z.number().positive("Monthly investment must be positive"),
+  rate: z.number().positive("Interest rate must be positive"),
+  years: z.number().positive("Years must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -63,11 +57,15 @@ export default function RDCalculator() {
                 <FormField
                   control={form.control}
                   name="monthlyInvestment"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Monthly Investment (₹)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -77,11 +75,16 @@ export default function RDCalculator() {
                 <FormField
                   control={form.control}
                   name="rate"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Interest Rate (% per annum)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" step="0.1" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          step="0.1" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -91,11 +94,15 @@ export default function RDCalculator() {
                 <FormField
                   control={form.control}
                   name="years"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Time Period (Years)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

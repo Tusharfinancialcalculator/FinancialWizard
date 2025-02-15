@@ -17,15 +17,9 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateFD } from "@/lib/calculators";
 
 const formSchema = z.object({
-  principal: z.string().transform(Number).pipe(
-    z.number().positive("Principal amount must be positive")
-  ),
-  rate: z.string().transform(Number).pipe(
-    z.number().positive("Interest rate must be positive")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().positive("Years must be positive")
-  ),
+  principal: z.number().positive("Principal amount must be positive"),
+  rate: z.number().positive("Interest rate must be positive"),
+  years: z.number().positive("Years must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -54,7 +48,7 @@ export default function FDCalculator() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Fixed Deposit Calculator</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">
@@ -63,11 +57,15 @@ export default function FDCalculator() {
                 <FormField
                   control={form.control}
                   name="principal"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Principal Amount (₹)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -77,11 +75,16 @@ export default function FDCalculator() {
                 <FormField
                   control={form.control}
                   name="rate"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Interest Rate (% per annum)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" step="0.1" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          step="0.1" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -91,11 +94,15 @@ export default function FDCalculator() {
                 <FormField
                   control={form.control}
                   name="years"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Time Period (Years)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

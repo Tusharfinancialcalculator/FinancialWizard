@@ -17,15 +17,9 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateSIP } from "@/lib/calculators";
 
 const formSchema = z.object({
-  monthlyInvestment: z.string().transform(Number).pipe(
-    z.number().positive("Amount must be positive")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().positive("Years must be positive")
-  ),
-  expectedReturn: z.string().transform(Number).pipe(
-    z.number().positive("Return rate must be positive")
-  ),
+  monthlyInvestment: z.number().positive("Amount must be positive"),
+  years: z.number().positive("Years must be positive"),
+  expectedReturn: z.number().positive("Return rate must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -63,11 +57,15 @@ export default function SipCalculator() {
                 <FormField
                   control={form.control}
                   name="monthlyInvestment"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Monthly Investment (₹)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -77,11 +75,15 @@ export default function SipCalculator() {
                 <FormField
                   control={form.control}
                   name="years"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Investment Period (Years)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -91,11 +93,15 @@ export default function SipCalculator() {
                 <FormField
                   control={form.control}
                   name="expectedReturn"
-                  render={({ field }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Expected Return Rate (%)</FormLabel>
                       <FormControl>
-                        <Input {...field} type="number" />
+                        <Input 
+                          {...field} 
+                          type="number" 
+                          onChange={e => onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
