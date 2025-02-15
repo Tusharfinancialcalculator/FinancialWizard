@@ -221,15 +221,14 @@ export default function FlatVsReducingCalculator() {
 
             <ResultsChart
               data={[
-                ...results.flatInterest.monthlyData.map(d => ({
-                  ...d,
-                  name: d.label,
-                  "Flat Rate": d.value,
+                ...results.flatInterest.monthlyData.map((d, i) => ({
+                  label: d.label,
+                  value: d.value,
                 })),
-                ...results.reducingInterest.monthlyData.map(d => ({
-                  name: d.label,
-                  "Reducing Balance": d.value,
-                })),
+                ...results.reducingInterest.monthlyData.map((d, i) => ({
+                  label: d.label,
+                  value: d.value,
+                }))
               ]}
               title="Outstanding Principal Comparison"
             />
