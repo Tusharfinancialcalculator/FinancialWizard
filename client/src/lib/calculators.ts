@@ -2,7 +2,12 @@ export function calculateSIP(
   monthlyInvestment: number,
   years: number,
   expectedReturn: number
-) {
+): {
+  totalInvestment: number;
+  totalReturns: number;
+  maturityValue: number;
+  monthlyData: Array<{ label: string; value: number }>;
+} {
   const monthlyRate = expectedReturn / 12 / 100;
   const months = years * 12;
 
@@ -603,5 +608,69 @@ export function calculateGratuity(
       fifteenDaysSalary: Math.round(fifteenDaysSalary),
       yearsConsidered: yearsOfService,
     },
+  };
+}
+
+export function calculateAPY(
+  currentAge: number,
+  desiredPension: number
+): {
+  monthlyContribution: number;
+  totalInvestment: number;
+  corpusAtMaturity: number;
+  monthlyPension: number;
+  yearlyData: Array<{ label: string; value: number }>;
+} {
+  // Validate age (18-40 years)
+  if (currentAge < 18 || currentAge > 40) {
+    throw new Error("Age must be between 18 and 40 years");
+  }
+
+  // APY pension slabs (monthly)
+  const pensionSlabs = [1000, 2000, 3000, 4000, 5000];
+
+  // Find nearest pension slab
+  const nearestSlab = pensionSlabs.reduce((prev, curr) =>
+    Math.abs(curr - desiredPension) < Math.abs(prev - desiredPension) ? curr : prev
+  );
+
+  // Contribution chart (age -> monthly contribution for ₹1000 pension)
+  const baseContributionChart: Record<number, number> = {
+    18: 42, 19: 46, 20: 50, 21: 54, 22: 59, 23: 64, 24: 70, 25: 76,
+    26: 82, 27: 89, 28: 97, 29: 106, 30: 115, 31: 125, 32: 137, 33: 149,
+    34: 162, 35: 177, 36: 192, 37: 210, 38: 230, 39: 251, 40: 274
+  };
+
+  // Calculate monthly contribution based on desired pension
+  const monthlyContribution = Math.round(baseContributionChart[currentAge] * (nearestSlab / 1000));
+
+  // Calculate years till 60
+  const yearsTillMaturity = 60 - currentAge;
+
+  // Calculate total investment
+  const totalInvestment = monthlyContribution * 12 * yearsTillMaturity;
+
+  // Corpus at maturity (approximate - 170 times annual pension)
+  const corpusAtMaturity = nearestSlab * 12 * 170;
+
+  // Generate yearly data for visualization
+  let yearlyData = [];
+  const assumedReturnRate = 0.08; // 8% assumed return for projection
+  let currentCorpus = 0;
+
+  for (let i = 0; i <= yearsTillMaturity; i++) {
+    currentCorpus = (currentCorpus + monthlyContribution * 12) * (1 + assumedReturnRate);
+    yearlyData.push({
+      label: `Age ${currentAge + i}`,
+      value: Math.round(currentCorpus)
+    });
+  }
+
+  return {
+    monthlyContribution,
+    totalInvestment,
+    corpusAtMaturity,
+    monthlyPension: nearestSlab,
+    yearlyData
   };
 }
