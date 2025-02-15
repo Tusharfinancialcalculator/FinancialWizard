@@ -36,14 +36,18 @@ export default function HomeLoanCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: 5000000,
-      rate: 8.5,
-      tenure: 20,
+      principal: "5000000",
+      rate: "8.5",
+      tenure: "20",
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateEMI(data.principal, data.rate, data.tenure);
+    const result = calculateEMI(
+      Number(data.principal),
+      Number(data.rate),
+      Number(data.tenure)
+    );
     setResults(result);
   }
 

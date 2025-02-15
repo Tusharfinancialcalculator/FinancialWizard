@@ -52,13 +52,13 @@ export default function RetirementCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currentAge: 30,
-      retirementAge: 60,
-      monthlyExpenses: 50000,
-      currentSavings: 1000000,
-      monthlyInvestment: 20000,
-      expectedReturn: 12,
-      inflationRate: 6,
+      currentAge: "30",
+      retirementAge: "60",
+      monthlyExpenses: "50000",
+      currentSavings: "1000000",
+      monthlyInvestment: "20000",
+      expectedReturn: "12",
+      inflationRate: "6",
     },
   });
 

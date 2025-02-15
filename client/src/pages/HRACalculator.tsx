@@ -41,8 +41,8 @@ export default function HRACalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      basicSalary: 50000,
-      rentPaid: 20000,
+      basicSalary: "50000",
+      rentPaid: "20000",
       cityType: "metro",
     },
   });

@@ -36,9 +36,9 @@ export default function CarLoanCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      principal: 800000,
-      rate: 9.5,
-      tenure: 7,
+      principal: "800000",
+      rate: "9.5",
+      tenure: "7",
     },
   });
 
