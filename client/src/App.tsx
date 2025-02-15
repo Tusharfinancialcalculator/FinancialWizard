@@ -30,6 +30,10 @@ import BrokerageCalculator from "@/pages/BrokerageCalculator";
 import MarginCalculator from "@/pages/MarginCalculator";
 import TDSCalculator from "@/pages/TDSCalculator";
 import SalaryCalculator from "@/pages/SalaryCalculator";
+import InflationCalculator from "@/pages/InflationCalculator";
+import PostOfficeMISCalculator from "@/pages/PostOfficeMISCalculator";
+import SCSSCalculator from "@/pages/SCSSCalculator";
+import StockAveragePriceCalculator from "@/pages/StockAveragePriceCalculator";
 
 function Router() {
   return (
@@ -63,6 +67,10 @@ function Router() {
           <Route path="/margin-calculator" component={MarginCalculator} />
           <Route path="/tds-calculator" component={TDSCalculator} />
           <Route path="/salary-calculator" component={SalaryCalculator} />
+          <Route path="/inflation-calculator" component={InflationCalculator} />
+          <Route path="/post-office-mis-calculator" component={PostOfficeMISCalculator} />
+          <Route path="/scss-calculator" component={SCSSCalculator} />
+          <Route path="/stock-average-price-calculator" component={StockAveragePriceCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>

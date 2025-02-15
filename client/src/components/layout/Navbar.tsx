@@ -15,6 +15,9 @@ const navigation = [
     { name: "RD Calculator", href: "/rd-calculator" },
     { name: "NPS Calculator", href: "/nps-calculator" },
     { name: "APY Calculator", href: "/apy-calculator" },
+    { name: "SCSS Calculator", href: "/scss-calculator" },
+    { name: "Post Office MIS", href: "/post-office-mis-calculator" },
+    { name: "Stock Average Price", href: "/stock-average-price-calculator" },
     { name: "Brokerage Calculator", href: "/brokerage-calculator" },
     { name: "Margin Calculator", href: "/margin-calculator" },
   ]},
@@ -38,6 +41,7 @@ const navigation = [
   { name: "Planning", items: [
     { name: "Retirement", href: "/retirement-calculator" },
     { name: "Credit Card", href: "/credit-card-calculator" },
+    { name: "Inflation", href: "/inflation-calculator" },
   ]},
 ];
 
