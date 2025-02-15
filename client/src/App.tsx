@@ -7,14 +7,17 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import SipCalculator from "@/pages/SipCalculator";
 import LumpsumCalculator from "@/pages/LumpsumCalculator";
-import EmiCalculator from "@/pages/EmiCalculator";
+import HRACalculator from "@/pages/HRACalculator";
+import RetirementCalculator from "@/pages/RetirementCalculator";
+import HomeLoanCalculator from "@/pages/HomeLoanCalculator";
+import CarLoanCalculator from "@/pages/CarLoanCalculator";
 import CreditCardCalculator from "@/pages/CreditCardCalculator";
 import InterestCalculator from "@/pages/InterestCalculator";
 import PPFCalculator from "@/pages/PPFCalculator";
 import FDCalculator from "@/pages/FDCalculator";
 import RDCalculator from "@/pages/RDCalculator";
 import SimpleInterestCalculator from "@/pages/SimpleInterestCalculator";
-import NPSCalculator from "@/pages/NPSCalculator"; // Added import
+import NPSCalculator from "@/pages/NPSCalculator";
 
 function Router() {
   return (
@@ -25,14 +28,17 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/sip-calculator" component={SipCalculator} />
           <Route path="/lumpsum-calculator" component={LumpsumCalculator} />
-          <Route path="/emi-calculator" component={EmiCalculator} />
+          <Route path="/hra-calculator" component={HRACalculator} />
+          <Route path="/retirement-calculator" component={RetirementCalculator} />
+          <Route path="/home-loan-calculator" component={HomeLoanCalculator} />
+          <Route path="/car-loan-calculator" component={CarLoanCalculator} />
           <Route path="/credit-card-calculator" component={CreditCardCalculator} />
           <Route path="/interest-calculator" component={InterestCalculator} />
           <Route path="/ppf-calculator" component={PPFCalculator} />
           <Route path="/fd-calculator" component={FDCalculator} />
           <Route path="/rd-calculator" component={RDCalculator} />
           <Route path="/simple-interest-calculator" component={SimpleInterestCalculator} />
-          <Route path="/nps-calculator" component={NPSCalculator} /> {/* Added route */}
+          <Route path="/nps-calculator" component={NPSCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>
