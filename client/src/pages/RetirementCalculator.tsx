@@ -9,12 +9,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateRetirement } from "@/lib/calculators";
+import { AlertCircle } from "lucide-react";
 
 const formSchema = z.object({
   currentAge: z.string().transform(Number).pipe(
@@ -42,6 +44,12 @@ const formSchema = z.object({
   inflationRate: z.string().transform(Number).pipe(
     z.number().min(0, "Inflation rate cannot be negative")
   ),
+  annualExpenseIncrease: z.string().transform(Number).pipe(
+    z.number().min(0, "Annual expense increase cannot be negative")
+  ),
+  annualInvestmentIncrease: z.string().transform(Number).pipe(
+    z.number().min(0, "Annual investment increase cannot be negative")
+  ),
 });
 
 type FormValues = {
@@ -52,6 +60,8 @@ type FormValues = {
   monthlyInvestment: string;
   expectedReturn: string;
   inflationRate: string;
+  annualExpenseIncrease: string;
+  annualInvestmentIncrease: string;
 };
 
 export default function RetirementCalculator() {
@@ -67,6 +77,8 @@ export default function RetirementCalculator() {
       monthlyInvestment: "20000",
       expectedReturn: "12",
       inflationRate: "6",
+      annualExpenseIncrease: "0",
+      annualInvestmentIncrease: "0",
     },
   });
 
@@ -78,7 +90,9 @@ export default function RetirementCalculator() {
       Number(data.currentSavings),
       Number(data.monthlyInvestment),
       Number(data.expectedReturn),
-      Number(data.inflationRate)
+      Number(data.inflationRate),
+      Number(data.annualExpenseIncrease),
+      Number(data.annualInvestmentIncrease)
     );
     setResults(result);
   }
@@ -131,6 +145,26 @@ export default function RetirementCalculator() {
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
+                      <FormDescription>
+                        Your current monthly expenses that need to be covered in retirement
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="annualExpenseIncrease"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Annual Expense Increase (%)</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="number" step="0.1" />
+                      </FormControl>
+                      <FormDescription>
+                        Expected yearly increase in expenses (above inflation)
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -145,6 +179,9 @@ export default function RetirementCalculator() {
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
+                      <FormDescription>
+                        Total amount currently saved for retirement
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -159,6 +196,23 @@ export default function RetirementCalculator() {
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="annualInvestmentIncrease"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Annual Investment Increase (%)</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="number" step="0.1" />
+                      </FormControl>
+                      <FormDescription>
+                        Yearly percentage increase in your monthly investments
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -205,7 +259,36 @@ export default function RetirementCalculator() {
         {results && (
           <div className="space-y-6">
             <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">How the calculations work</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 text-sm text-muted-foreground space-y-2">
+                <p>
+                  <strong>Required Corpus:</strong> Based on the 4% rule, which suggests you need 25 times your annual expenses to sustain a 30-year retirement. Your expenses are adjusted for inflation and any annual increases.
+                </p>
+                <p>
+                  <strong>Expected Corpus:</strong> Combines your current savings (grown at the expected return rate) with your monthly investments (increased annually if specified) until retirement.
+                </p>
+                <p>
+                  <strong>Monthly Investment Needed:</strong> Additional investment required to bridge any gap between required and expected corpus.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
               <CardContent className="p-6 grid gap-4">
+                <div>
+                  <h3 className="text-sm text-muted-foreground">
+                    Monthly Expenses at Retirement
+                  </h3>
+                  <p className="text-2xl font-semibold">
+                    ₹{Math.round(results.futureMonthlyExpenses).toLocaleString()}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Adjusted for inflation and annual increases
+                  </p>
+                </div>
+
                 <div>
                   <h3 className="text-sm text-muted-foreground">
                     Required Retirement Corpus
@@ -213,7 +296,11 @@ export default function RetirementCalculator() {
                   <p className="text-2xl font-semibold">
                     ₹{Math.round(results.requiredCorpus).toLocaleString()}
                   </p>
+                  <p className="text-sm text-muted-foreground">
+                    To sustain expenses for 30 years post retirement
+                  </p>
                 </div>
+
                 <div>
                   <h3 className="text-sm text-muted-foreground">
                     Expected Corpus (Current Path)
@@ -222,14 +309,18 @@ export default function RetirementCalculator() {
                     ₹{Math.round(results.currentCorpus).toLocaleString()}
                   </p>
                 </div>
-                <div>
-                  <h3 className="text-sm text-muted-foreground">
-                    Additional Monthly Investment Needed
-                  </h3>
-                  <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.monthlyInvestmentNeeded).toLocaleString()}
-                  </p>
-                </div>
+
+                {results.shortfall > 0 && (
+                  <div className="flex items-start gap-2 text-destructive">
+                    <AlertCircle className="h-5 w-5" />
+                    <div>
+                      <p className="font-semibold">Shortfall: ₹{Math.round(results.shortfall).toLocaleString()}</p>
+                      <p className="text-sm">
+                        Additional monthly investment needed: ₹{Math.round(results.monthlyInvestmentNeeded).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

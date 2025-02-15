@@ -283,27 +283,39 @@ export function calculateRetirement(
   currentSavings: number,
   monthlyInvestment: number,
   expectedReturn: number,
-  inflationRate: number = 6
+  inflationRate: number = 6,
+  annualExpenseIncrease: number = 0,
+  annualInvestmentIncrease: number = 0
 ) {
   const yearsToRetirement = retirementAge - currentAge;
   const yearsPostRetirement = 85 - retirementAge;
 
-  const futureMonthlyExpenses = monthlyExpenses *
-    Math.pow(1 + inflationRate / 100, yearsToRetirement);
+  // Calculate future monthly expenses considering both inflation and annual increase
+  const futureMonthlyExpenses = monthlyExpenses * 
+    Math.pow(1 + (inflationRate + annualExpenseIncrease) / 100, yearsToRetirement);
 
+  // Required corpus calculation using the 4% rule (25 times annual expenses)
+  // This ensures the corpus lasts for approximately 30 years post retirement
   const requiredCorpus = (futureMonthlyExpenses * 12) / 0.04;
 
+  // Calculate how current savings will grow by retirement
   const currentCorpus = currentSavings *
     Math.pow(1 + expectedReturn / 100, yearsToRetirement);
 
   const monthlyRate = expectedReturn / 12 / 100;
   const months = yearsToRetirement * 12;
 
-  const futureValueOfCurrentInvestments = monthlyInvestment *
-    ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
-    (1 + monthlyRate);
+  // Calculate future value of monthly investments with annual increases
+  let futureValueOfInvestments = 0;
+  let yearlyInvestment = monthlyInvestment * 12;
 
-  const totalExpectedCorpus = currentCorpus + futureValueOfCurrentInvestments;
+  for (let year = 0; year < yearsToRetirement; year++) {
+    futureValueOfInvestments = (futureValueOfInvestments + yearlyInvestment) * 
+      (1 + expectedReturn / 100);
+    yearlyInvestment *= (1 + annualInvestmentIncrease / 100);
+  }
+
+  const totalExpectedCorpus = currentCorpus + futureValueOfInvestments;
 
   const shortfall = Math.max(0, requiredCorpus - totalExpectedCorpus);
   const monthlyInvestmentNeeded = shortfall > 0
@@ -313,23 +325,31 @@ export function calculateRetirement(
     : 0;
 
   const yearlyData: Array<{ label: string; value: number }> = [];
-  for (let year = 0; year <= yearsToRetirement; year++) {
-    const savingsGrowth = currentSavings *
-      Math.pow(1 + expectedReturn / 100, year);
-    const investmentGrowth = monthlyInvestment * 12 *
-      ((Math.pow(1 + expectedReturn / 100, year) - 1) /
-        (expectedReturn / 100));
+  let currentBalance = currentSavings;
+  yearlyInvestment = monthlyInvestment * 12;
+
+  yearlyData.push({
+    label: `Age ${currentAge}`,
+    value: currentBalance,
+  });
+
+  for (let year = 1; year <= yearsToRetirement; year++) {
+    currentBalance = (currentBalance + yearlyInvestment) * (1 + expectedReturn / 100);
+    yearlyInvestment *= (1 + annualInvestmentIncrease / 100);
+
     yearlyData.push({
       label: `Age ${currentAge + year}`,
-      value: Math.round(savingsGrowth + investmentGrowth),
+      value: Math.round(currentBalance),
     });
   }
 
   return {
     requiredCorpus,
-    currentCorpus,
+    currentCorpus: totalExpectedCorpus,
     monthlyInvestmentNeeded,
     yearlyData,
+    futureMonthlyExpenses,
+    shortfall,
   };
 }
 
