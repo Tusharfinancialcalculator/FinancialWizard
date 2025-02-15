@@ -17,18 +17,18 @@ import ResultsChart from "@/components/calculators/ResultsChart";
 import { calculateStepUpSIP } from "@/lib/calculators";
 
 const formSchema = z.object({
-  monthlyInvestment: z.string().transform(Number).pipe(
-    z.number().positive("Monthly investment must be positive")
-  ),
-  annualIncrease: z.string().transform(Number).pipe(
-    z.number().min(0, "Annual increase cannot be negative")
-  ),
-  years: z.string().transform(Number).pipe(
-    z.number().positive("Years must be positive")
-  ),
-  expectedReturn: z.string().transform(Number).pipe(
-    z.number().positive("Expected return rate must be positive")
-  ),
+  monthlyInvestment: z.coerce
+    .number()
+    .positive("Monthly investment must be positive"),
+  annualIncrease: z.coerce
+    .number()
+    .min(0, "Annual increase cannot be negative"),
+  years: z.coerce
+    .number()
+    .positive("Years must be positive"),
+  expectedReturn: z.coerce
+    .number()
+    .positive("Expected return rate must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -39,22 +39,27 @@ export default function StepUpSIPCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      monthlyInvestment: "10000",
-      annualIncrease: "10",
-      years: "10",
-      expectedReturn: "12",
+      monthlyInvestment: 10000,
+      annualIncrease: 10,
+      years: 10,
+      expectedReturn: 12,
     },
   });
 
   function onSubmit(data: FormValues) {
     const result = calculateStepUpSIP(
-      Number(data.monthlyInvestment),
-      Number(data.annualIncrease),
-      Number(data.years),
-      Number(data.expectedReturn)
+      data.monthlyInvestment,
+      data.years,
+      data.expectedReturn,
+      data.annualIncrease
     );
     setResults(result);
   }
+
+  // Calculate final monthly investment if results exist
+  const finalMonthlyInvestment = results 
+    ? form.getValues('monthlyInvestment') * Math.pow(1 + form.getValues('annualIncrease') / 100, form.getValues('years'))
+    : 0;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -138,7 +143,7 @@ export default function StepUpSIPCalculator() {
                     Total Investment
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalInvestment).toLocaleString()}
+                    ₹{results.totalInvestment.toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -146,7 +151,7 @@ export default function StepUpSIPCalculator() {
                     Total Returns
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalReturns).toLocaleString()}
+                    ₹{results.totalReturns.toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -154,14 +159,14 @@ export default function StepUpSIPCalculator() {
                     Final Monthly Investment
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.finalMonthlyInvestment).toLocaleString()}
+                    ₹{Math.round(finalMonthlyInvestment).toLocaleString()}
                   </p>
                 </div>
               </CardContent>
             </Card>
 
             <ResultsChart
-              data={results.yearlyData}
+              data={results.monthlyData}
               title="Step-Up SIP Growth Over Time"
             />
           </div>

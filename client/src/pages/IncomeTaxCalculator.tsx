@@ -23,15 +23,15 @@ import {
 import { calculateIncomeTax } from "@/lib/calculators";
 
 const formSchema = z.object({
-  salary: z.string().transform(Number).pipe(
-    z.number().min(0, "Salary cannot be negative")
-  ),
-  otherIncome: z.string().transform(Number).pipe(
-    z.number().min(0, "Other income cannot be negative")
-  ),
-  deductions: z.string().transform(Number).pipe(
-    z.number().min(0, "Deductions cannot be negative")
-  ),
+  salary: z.coerce
+    .number()
+    .min(0, "Salary cannot be negative"),
+  otherIncome: z.coerce
+    .number()
+    .min(0, "Other income cannot be negative"),
+  deductions: z.coerce
+    .number()
+    .min(0, "Deductions cannot be negative"),
   regime: z.enum(["old", "new"]),
 });
 
@@ -43,21 +43,24 @@ export default function IncomeTaxCalculator() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      salary: "500000",
-      otherIncome: "0",
-      deductions: "150000",
+      salary: 800000,
+      otherIncome: 0,
+      deductions: 150000,
       regime: "new",
     },
   });
 
   function onSubmit(data: FormValues) {
-    const result = calculateIncomeTax(
-      Number(data.salary),
-      Number(data.otherIncome),
-      Number(data.deductions),
-      data.regime
-    );
-    setResults(result);
+    // Calculate gross income
+    const grossIncome = data.salary + data.otherIncome;
+    const result = calculateIncomeTax(grossIncome, data.deductions, data.regime);
+
+    // Store gross income and calculate take-home
+    setResults({
+      ...result,
+      grossIncome,
+      takeHome: grossIncome - result.taxAmount
+    });
   }
 
   return (
@@ -153,7 +156,7 @@ export default function IncomeTaxCalculator() {
                     Gross Total Income
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.grossIncome).toLocaleString()}
+                    ₹{results.grossIncome.toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -161,7 +164,7 @@ export default function IncomeTaxCalculator() {
                     Taxable Income
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.taxableIncome).toLocaleString()}
+                    ₹{results.taxableIncome.toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -169,7 +172,7 @@ export default function IncomeTaxCalculator() {
                     Total Tax Payable
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.totalTax).toLocaleString()}
+                    ₹{results.taxAmount.toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -177,7 +180,7 @@ export default function IncomeTaxCalculator() {
                     Net Take-Home
                   </h3>
                   <p className="text-2xl font-semibold">
-                    ₹{Math.round(results.takeHome).toLocaleString()}
+                    ₹{results.takeHome.toLocaleString()}
                   </p>
                 </div>
               </CardContent>

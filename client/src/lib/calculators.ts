@@ -2,12 +2,7 @@ export function calculateSIP(
   monthlyInvestment: number,
   years: number,
   expectedReturn: number
-): {
-  totalInvestment: number;
-  totalReturns: number;
-  maturityValue: number;
-  monthlyData: Array<{ label: string; value: number }>;
-} {
+) {
   const monthlyRate = expectedReturn / 12 / 100;
   const months = years * 12;
 
@@ -468,7 +463,7 @@ export function calculateStepUpSIP(
 }
 
 export function calculateIncomeTax(
-  salary: number,
+  income: number,
   deductions: number = 0
 ): {
   taxableIncome: number;
@@ -478,6 +473,8 @@ export function calculateIncomeTax(
     slab: string;
     tax: number;
   }>;
+  grossIncome: number;
+  takeHome: number;
 } {
   // New tax regime slabs (FY 2024-25)
   const slabs = [
@@ -489,7 +486,8 @@ export function calculateIncomeTax(
     { limit: Infinity, rate: 30 }, // >15L: 30%
   ];
 
-  const taxableIncome = Math.max(0, salary - deductions);
+  const grossIncome = income;
+  const taxableIncome = Math.max(0, income - deductions);
   let remainingIncome = taxableIncome;
   let totalTax = 0;
   let slabwiseBreakup = [];
@@ -517,10 +515,16 @@ export function calculateIncomeTax(
     if (remainingIncome <= 0) break;
   }
 
+  const taxAmount = Math.round(totalTax);
+  const effectiveTaxRate = Number((totalTax / (taxableIncome || 1) * 100).toFixed(2));
+  const takeHome = grossIncome - taxAmount;
+
   return {
+    grossIncome,
     taxableIncome,
-    taxAmount: Math.round(totalTax),
-    effectiveTaxRate: Number((taxableIncome > 0 ? (totalTax / taxableIncome) * 100 : 0).toFixed(2)),
+    taxAmount,
+    effectiveTaxRate,
     slabwiseBreakup,
+    takeHome,
   };
 }
