@@ -20,6 +20,11 @@ import {
   Banknote,
   LineChart,
   GraduationCap,
+  DollarSign,
+  BarChart2,
+  TrendingDown,
+  Scale,
+  FileText,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -59,6 +64,36 @@ const features = [
     description: "Calculate monthly investments under Atal Pension Yojana",
     icon: GraduationCap,
     href: "/apy-calculator",
+  },
+  {
+    title: "GST Calculator",
+    description: "Compute payable GST amounts",
+    icon: DollarSign,
+    href: "/gst-calculator",
+  },
+  {
+    title: "Flat vs Reducing Rate",
+    description: "Compare EMIs under different interest schemes",
+    icon: TrendingDown,
+    href: "/flat-vs-reducing-calculator",
+  },
+  {
+    title: "Brokerage Calculator",
+    description: "Estimate brokerage charges for stock orders",
+    icon: BarChart2,
+    href: "/brokerage-calculator",
+  },
+  {
+    title: "Margin Calculator",
+    description: "Compute margin requirements for trading",
+    icon: Scale,
+    href: "/margin-calculator",
+  },
+  {
+    title: "TDS Calculator",
+    description: "Calculate tax deducted at source (TDS)",
+    icon: FileText,
+    href: "/tds-calculator",
   },
   {
     title: "Compound Interest",
