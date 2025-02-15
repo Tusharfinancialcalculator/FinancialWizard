@@ -156,7 +156,7 @@ const features = [
   },
   {
     title: "Retirement Calculator",
-    description: "Plan your retirement with our comprehensive calculator. Input your current age, retirement age, monthly expenses, expected returns, and inflation rate to determine the corpus needed and monthly investments required. Accounts for inflation and helps visualize your retirement savings growth.",
+    description: "Plan for retirement with our comprehensive calculator",
     icon: Clock,
     href: "/retirement-calculator",
   },
@@ -180,31 +180,31 @@ const features = [
   },
   {
     title: "Salary Calculator",
-    description: "Calculate take-home salary after all deductions and allowances",
+    description: "Calculate take-home salary after deductions",
     icon: Users,
     href: "/salary-calculator",
   },
   {
     title: "Inflation Calculator",
-    description: "Analyze the impact of inflation on purchasing power over time",
+    description: "Analyze the impact of inflation on purchasing power",
     icon: ChartUp,
     href: "/inflation-calculator",
   },
   {
     title: "Post Office MIS",
-    description: "Calculate returns from Post Office Monthly Income Scheme",
+    description: "Calculate Post Office Monthly Income Scheme returns",
     icon: Inbox,
     href: "/post-office-mis-calculator",
   },
   {
     title: "SCSS Calculator",
-    description: "Calculate returns from Senior Citizen Savings Scheme",
+    description: "Calculate Senior Citizen Savings Scheme returns",
     icon: ChevronsUp,
     href: "/scss-calculator",
   },
   {
     title: "Stock Average Price",
-    description: "Calculate average purchase price of stocks across multiple buys",
+    description: "Calculate average stock price across multiple purchases",
     icon: BarChart4,
     href: "/stock-average-price-calculator",
   },
@@ -226,10 +226,10 @@ export default function HomePage() {
         {features.map((feature) => (
           <Link key={feature.title} href={feature.href}>
             <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <feature.icon className="h-12 w-12 text-primary mb-4" />
-                <h2 className="text-xl font-semibold mb-2">{feature.title}</h2>
-                <p className="text-muted-foreground">{feature.description}</p>
+              <CardContent className="p-6 flex flex-col">
+                <feature.icon className="h-12 w-12 text-primary mb-4 shrink-0" />
+                <h2 className="text-xl font-semibold mb-2 line-clamp-1">{feature.title}</h2>
+                <p className="text-muted-foreground text-sm line-clamp-2">{feature.description}</p>
               </CardContent>
             </Card>
           </Link>
