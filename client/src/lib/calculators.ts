@@ -422,7 +422,7 @@ export function calculateStepUpSIP(
   initialMonthlyInvestment: number,
   years: number,
   expectedReturn: number,
-  annualIncrement: number // Percentage increase per year
+  annualIncrement: number
 ): {
   totalInvestment: number;
   totalReturns: number;
@@ -440,8 +440,8 @@ export function calculateStepUpSIP(
   }];
 
   for (let i = 1; i <= months; i++) {
-    // Increase investment at the start of each year (except first year)
-    if (i % 12 === 0) {
+    // Increase investment at the start of each year (after first year)
+    if (i > 12 && i % 12 === 1) {
       monthlyInvestment *= (1 + annualIncrement / 100);
     }
 
@@ -457,9 +457,11 @@ export function calculateStepUpSIP(
     });
   }
 
+  const totalReturns = balance - totalInvestment;
+
   return {
     totalInvestment: Math.round(totalInvestment),
-    totalReturns: Math.round(balance - totalInvestment),
+    totalReturns: Math.round(totalReturns),
     maturityValue: Math.round(balance),
     monthlyData,
   };
@@ -503,12 +505,10 @@ export function calculateIncomeTax(
       const slabTax = (slabIncome * slab.rate) / 100;
       totalTax += slabTax;
 
-      if (slabTax > 0) {
-        slabwiseBreakup.push({
-          slab: `${previousLimit.toLocaleString()}-${slab.limit === Infinity ? "Above" : slab.limit.toLocaleString()}`,
-          tax: Math.round(slabTax)
-        });
-      }
+      slabwiseBreakup.push({
+        slab: `₹${previousLimit.toLocaleString()}-${slab.limit === Infinity ? "Above" : "₹" + slab.limit.toLocaleString()}`,
+        tax: Math.round(slabTax)
+      });
     }
 
     remainingIncome -= slabIncome;
@@ -520,7 +520,7 @@ export function calculateIncomeTax(
   return {
     taxableIncome,
     taxAmount: Math.round(totalTax),
-    effectiveTaxRate: taxableIncome > 0 ? (totalTax / taxableIncome) * 100 : 0,
+    effectiveTaxRate: Number((taxableIncome > 0 ? (totalTax / taxableIncome) * 100 : 0).toFixed(2)),
     slabwiseBreakup,
   };
 }
