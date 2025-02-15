@@ -10,13 +10,13 @@ export function calculateSIP(
 } {
   const monthlyRate = expectedReturn / 12 / 100;
   const months = years * 12;
-  
+
   let monthlyData = [];
   const maturityValue =
     monthlyInvestment *
     ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
     (1 + monthlyRate);
-    
+
   const totalInvestment = monthlyInvestment * months;
   const totalReturns = maturityValue - totalInvestment;
 
@@ -51,19 +51,19 @@ export function calculateEMI(
 } {
   const monthlyRate = rate / 12 / 100;
   const months = tenure * 12;
-  
+
   const emi =
     (principal *
       monthlyRate *
       Math.pow(1 + monthlyRate, months)) /
     (Math.pow(1 + monthlyRate, months) - 1);
-    
+
   const totalPayment = emi * months;
   const totalInterest = totalPayment - principal;
 
   let monthlyData = [];
   let remainingBalance = principal;
-  
+
   for (let i = 0; i <= months; i++) {
     monthlyData.push({
       label: `Month ${i}`,
@@ -293,7 +293,7 @@ export function calculateHRA(
   taxableHRA: number;
   monthlyData: Array<{ label: string; value: number }>;
 } {
-  const hraReceived = basicSalary * 0.4; 
+  const hraReceived = basicSalary * 0.4;
   const cityMultiplier = cityType === 'metro' ? 0.5 : 0.4;
   const cityBasedExemption = basicSalary * cityMultiplier;
   const rentBasedExemption = rentPaid - (basicSalary * 0.1);
@@ -334,39 +334,39 @@ export function calculateRetirement(
   yearlyData: Array<{ label: string; value: number }>;
 } {
   const yearsToRetirement = retirementAge - currentAge;
-  const yearsPostRetirement = 85 - retirementAge; 
+  const yearsPostRetirement = 85 - retirementAge;
 
-  const futureMonthlyExpenses = monthlyExpenses * 
+  const futureMonthlyExpenses = monthlyExpenses *
     Math.pow(1 + inflationRate / 100, yearsToRetirement);
 
   const requiredCorpus = (futureMonthlyExpenses * 12) / 0.04;
 
-  const currentCorpus = currentSavings * 
+  const currentCorpus = currentSavings *
     Math.pow(1 + expectedReturn / 100, yearsToRetirement);
 
   const monthlyRate = expectedReturn / 12 / 100;
   const months = yearsToRetirement * 12;
 
-  const futureValueOfCurrentInvestments = monthlyInvestment * 
-    ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * 
+  const futureValueOfCurrentInvestments = monthlyInvestment *
+    ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
     (1 + monthlyRate);
 
   const totalExpectedCorpus = currentCorpus + futureValueOfCurrentInvestments;
 
   const shortfall = Math.max(0, requiredCorpus - totalExpectedCorpus);
-  const monthlyInvestmentNeeded = shortfall > 0 
-    ? (shortfall * monthlyRate) / 
-      (Math.pow(1 + monthlyRate, months) - 1) / 
+  const monthlyInvestmentNeeded = shortfall > 0
+    ? (shortfall * monthlyRate) /
+      (Math.pow(1 + monthlyRate, months) - 1) /
       (1 + monthlyRate)
     : 0;
 
   const yearlyData = [];
   for (let year = 0; year <= yearsToRetirement; year++) {
-    const savingsGrowth = currentSavings * 
+    const savingsGrowth = currentSavings *
       Math.pow(1 + expectedReturn / 100, year);
-    const investmentGrowth = monthlyInvestment * 12 * 
-      ((Math.pow(1 + expectedReturn / 100, year) - 1) / 
-      (expectedReturn / 100));
+    const investmentGrowth = monthlyInvestment * 12 *
+      ((Math.pow(1 + expectedReturn / 100, year) - 1) /
+        (expectedReturn / 100));
     yearlyData.push({
       label: `Age ${currentAge + year}`,
       value: Math.round(savingsGrowth + investmentGrowth),
@@ -434,29 +434,33 @@ export function calculateStepUpSIP(
   let monthlyInvestment = initialMonthlyInvestment;
   let totalInvestment = 0;
   let balance = 0;
-  let monthlyData = [];
+  let monthlyData = [{
+    label: "Month 0",
+    value: 0
+  }];
 
-  for (let i = 0; i <= months; i++) {
+  for (let i = 1; i <= months; i++) {
     // Increase investment at the start of each year (except first year)
-    if (i > 0 && i % 12 === 0) {
-      monthlyInvestment += (monthlyInvestment * annualIncrement) / 100;
+    if (i % 12 === 0) {
+      monthlyInvestment *= (1 + annualIncrement / 100);
     }
 
-    if (i > 0) {
-      balance = (balance + monthlyInvestment) * (1 + monthlyRate);
-      totalInvestment += monthlyInvestment;
-    }
+    // Add this month's investment
+    totalInvestment += monthlyInvestment;
+
+    // Calculate returns including this month's investment
+    balance = (balance + monthlyInvestment) * (1 + monthlyRate);
 
     monthlyData.push({
       label: `Month ${i}`,
-      value: Math.round(balance),
+      value: Math.round(balance)
     });
   }
 
   return {
-    totalInvestment,
-    totalReturns: balance - totalInvestment,
-    maturityValue: balance,
+    totalInvestment: Math.round(totalInvestment),
+    totalReturns: Math.round(balance - totalInvestment),
+    maturityValue: Math.round(balance),
     monthlyData,
   };
 }
@@ -494,16 +498,19 @@ export function calculateIncomeTax(
       Math.max(0, remainingIncome),
       slab.limit - previousLimit
     );
-    const slabTax = (slabIncome * slab.rate) / 100;
 
-    if (slabTax > 0) {
-      slabwiseBreakup.push({
-        slab: `${previousLimit.toLocaleString()}-${slab.limit === Infinity ? "Above" : slab.limit.toLocaleString()}`,
-        tax: slabTax,
-      });
+    if (slabIncome > 0) {
+      const slabTax = (slabIncome * slab.rate) / 100;
+      totalTax += slabTax;
+
+      if (slabTax > 0) {
+        slabwiseBreakup.push({
+          slab: `${previousLimit.toLocaleString()}-${slab.limit === Infinity ? "Above" : slab.limit.toLocaleString()}`,
+          tax: Math.round(slabTax)
+        });
+      }
     }
 
-    totalTax += slabTax;
     remainingIncome -= slabIncome;
     previousLimit = slab.limit;
 
@@ -512,8 +519,8 @@ export function calculateIncomeTax(
 
   return {
     taxableIncome,
-    taxAmount: totalTax,
-    effectiveTaxRate: (totalTax / taxableIncome) * 100,
+    taxAmount: Math.round(totalTax),
+    effectiveTaxRate: taxableIncome > 0 ? (totalTax / taxableIncome) * 100 : 0,
     slabwiseBreakup,
   };
 }
